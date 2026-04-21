@@ -75,21 +75,33 @@
     async function updateMetadata() {
         if (!isPlaying) return;
         
+        let nomeDaMusica = "";
+        
         try {
+            // Tentativa 1: Busca via Servidor (Funciona em Localhost e Servidores Pagos)
             const response = await fetch('/api/musica/');
             const data = await response.json();
-            const nomeDaMusica = data.musica || '';
-            
-            if (isPlaying) {
-                if (nomeDaMusica && nomeDaMusica.trim().length > 0) {
-                    setAllStatus(nomeDaMusica);
-                } else {
-                    setAllStatus("Ao Vivo");
-                }
+            if (data.musica && !data.musica.includes("Sintonize")) {
+                nomeDaMusica = data.musica;
             }
-        } catch (error) {
-            console.error('Erro ao buscar metadados:', error);
-            if (isPlaying) setAllStatus("Ao Vivo");
+        } catch (e) { console.log("Erro server-side fetch"); }
+
+        // Tentativa 2: Busca via Navegador (Fallback para PythonAnywhere Grátis)
+        if (!nomeDaMusica) {
+            try {
+                const url = 'https://api.brasilstream.com.br/musica_agora/id:1185863148;';
+                const response = await fetch(url);
+                const text = await response.text();
+                nomeDaMusica = text.replace(/<[^>]*>?/gm, '').trim();
+            } catch (e) { console.log("Erro client-side fetch (CORS?)"); }
+        }
+            
+        if (isPlaying) {
+            if (nomeDaMusica && nomeDaMusica.length > 3) {
+                setAllStatus(nomeDaMusica);
+            } else {
+                setAllStatus("Ao Vivo");
+            }
         }
     }
 
