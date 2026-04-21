@@ -11,7 +11,7 @@ from centralfm.models import Locutor, Programa
 loc_nomes = [
     "Danilo Vilela", "Chicão", "Alex Silva", "Renata Lima", 
     "Cairo Santos", "Igreja Evangélica", "Padre Aldemir - Igreja Católica",
-    "Centro Espírita", "Igreja Evangélica (Jovens)"
+    "Centro Espírita", "Igreja Evangélica (Jovens)", "Canal Gov"
 ]
 
 locutores = {}
@@ -30,11 +30,11 @@ for dia in dias_uteis:
         {"nome": "Show da Manhã", "locutor": locutores["Danilo Vilela"], "dia": dia, "inicio": time(5,0), "fim": time(8,0)},
         {"nome": "Top Central", "locutor": locutores["Chicão"], "dia": dia, "inicio": time(8,0), "fim": time(11,0)},
         {"nome": "A Voz das Assembleias", "locutor": locutores["Igreja Evangélica"], "dia": dia, "inicio": time(11,0), "fim": time(11,30)},
-        {"nome": "Jornal da Central", "locutor": None, "dia": dia, "inicio": time(11,30), "fim": time(13,0)},
+        {"nome": "Jornal da Central", "locutor": locutores["Alex Silva"], "dia": dia, "inicio": time(11,30), "fim": time(13,0)},
         {"nome": "Central Alegre", "locutor": locutores["Alex Silva"], "dia": dia, "inicio": time(13,0), "fim": time(16,0)},
         {"nome": "Alô Central", "locutor": locutores["Cairo Santos"], "dia": dia, "inicio": time(16,0), "fim": time(18,0)},
         {"nome": "Noite 101", "locutor": locutores["Renata Lima"], "dia": dia, "inicio": time(18,0), "fim": time(21,0)},
-        {"nome": "A Voz do Brasil", "locutor": None, "dia": dia, "inicio": time(21,0), "fim": time(22,0)},
+        {"nome": "A Voz do Brasil", "locutor": locutores["Canal Gov"], "dia": dia, "inicio": time(21,0), "fim": time(22,0)},
         {"nome": "Madrugada 101", "locutor": None, "dia": dia, "inicio": time(22,0), "fim": time(23,59,59)},
     ])
 
