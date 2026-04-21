@@ -72,33 +72,74 @@
         if (volFill) volFill.style.width = (newVol * 100) + '%';
     }
 
+    function normalizeRadioText(text) {
+        if (!text) return "";
+        
+        // Mapa de correções para artefatos de codificação de rádio (escape sequences)
+        const mapa = {
+            '~a': 'ã', '~o': 'õ', '~e': 'ê', '~c': 'ç', '~n': 'ñ', 
+            '~A': 'Ã', '~O': 'Õ', '~E': 'Ê', '~C': 'Ç', '~N': 'Ñ',
+            '´a': 'á', '´e': 'é', '´i': 'í', '´o': 'ó', '´u': 'ú',
+            '´A': 'Á', '´E': 'É', '´I': 'Í', '´O': 'Ó', '´U': 'Ú',
+            '\'a': 'á', '\'e': 'é', '\'i': 'í', '\'o': 'ó', '\'u': 'ú',
+            '\'A': 'Á', '\'E': 'É', '\'I': 'Í', '\'O': 'Ó', '\'U': 'Ú',
+            '^a': 'â', '^e': 'ê', '^i': 'î', '^o': 'ô', '^u': 'û',
+            '^A': 'Â', '^E': 'Ê', '^I': 'Î', '^O': 'Ô', '^U': 'Û',
+            '`a': 'à', '`e': 'è', '`i': 'ì', '`o': 'ò', '`u': 'ù',
+            '&amp;': '&', '&#039;': "'", '&quot;': '"'
+        };
+
+        // Decodificação de Mojibake comum (UTF-8 as Latin-1)
+        try {
+            // Tenta converter de binário para UTF-8 se encontrar padrões de erro
+            if (/[\u00c0-\u00ff]/.test(text)) {
+                text = decodeURIComponent(escape(text));
+            }
+        } catch (e) { /* ignore */ }
+
+        let clean = text.trim();
+        for (const [erro, acerto] of Object.entries(mapa)) {
+            clean = clean.split(erro).join(acerto);
+        }
+
+        // Limpeza de Tags HTML que podem vir no metadado
+        clean = clean.replace(/<[^>]*>?/gm, '');
+
+        // Estética: Capitalize se estiver tudo em Caps
+        if (clean === clean.toUpperCase() && clean.length > 5) {
+            clean = clean.toLowerCase().replace(/(^\w|\s\w)/g, m => m.toUpperCase());
+        }
+
+        return clean.trim();
+    }
+
     async function updateMetadata() {
         if (!isPlaying) return;
         
         let nomeDaMusica = "";
         
         try {
-            // Tentativa 1: Busca via Servidor (Funciona em Localhost e Servidores Pagos)
+            // Tentativa 1: Busca via Servidor
             const response = await fetch('/api/musica/');
             const data = await response.json();
             if (data.musica && !data.musica.includes("Sintonize")) {
                 nomeDaMusica = data.musica;
             }
-        } catch (e) { console.log("Erro server-side fetch"); }
+        } catch (e) { }
 
-        // Tentativa 2: Busca via Navegador (Fallback para PythonAnywhere Grátis)
+        // Tentativa 2: Busca via Navegador (Fallback)
         if (!nomeDaMusica) {
             try {
                 const url = 'https://api.brasilstream.com.br/musica_agora/id:1185863148;';
                 const response = await fetch(url);
-                const text = await response.text();
-                nomeDaMusica = text.replace(/<[^>]*>?/gm, '').trim();
-            } catch (e) { console.log("Erro client-side fetch (CORS?)"); }
+                nomeDaMusica = await response.text();
+            } catch (e) { }
         }
             
         if (isPlaying) {
-            if (nomeDaMusica && nomeDaMusica.length > 3) {
-                setAllStatus(nomeDaMusica);
+            const finalNode = normalizeRadioText(nomeDaMusica);
+            if (finalNode && finalNode.length > 3) {
+                setAllStatus(finalNode);
             } else {
                 setAllStatus("Ao Vivo");
             }
