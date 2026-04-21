@@ -1,0 +1,11 @@
+*.pyc
+*__pycache__*
+db.sqlite3
+.DS_Store
+.env
+.gemini
+/media/
+/staticfiles/
+.vscode/
+venv/
+env/

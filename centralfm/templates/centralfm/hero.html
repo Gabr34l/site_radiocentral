@@ -1,0 +1,574 @@
+<style>
+    .hero-container {
+        width: 100%;
+        background:
+            radial-gradient(ellipse at 50% 10%, rgba(46, 204, 90, 0.55) 0%, transparent 50%),
+            radial-gradient(ellipse at 15% 85%, rgba(26, 122, 48, 0.45) 0%, transparent 45%),
+            radial-gradient(ellipse at 85% 75%, rgba(15, 92, 34, 0.40) 0%, transparent 40%),
+            radial-gradient(ellipse at 70% 40%, rgba(20, 110, 40, 0.30) 0%, transparent 35%),
+            #0a3d1a;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        color: var(--text-primary);
+        overflow: hidden;
+    }
+
+    /* ONDAS ANIMADAS */
+    .hero-container::before,
+    .hero-container::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .hero-container::before {
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1440 500' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,180 C200,120 400,240 600,180 C800,120 1000,240 1200,180 C1320,150 1400,170 1440,165' stroke='rgba(255,255,255,0.045)' stroke-width='2.5' fill='none'/%3E%3Cpath d='M0,280 C250,220 500,340 750,280 C900,240 1100,320 1440,270' stroke='rgba(255,255,255,0.03)' stroke-width='2' fill='none'/%3E%3Cpath d='M0,350 C300,290 600,400 900,340 C1100,300 1300,360 1440,340' stroke='rgba(255,255,255,0.025)' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        animation: waveSlide 10s ease-in-out infinite;
+    }
+
+    .hero-container::after {
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1440 500' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,220 C350,160 700,300 1050,220 C1200,185 1350,210 1440,200' stroke='rgba(255,255,255,0.025)' stroke-width='2' fill='none'/%3E%3Cpath d='M0,320 C200,270 500,370 800,310 C1050,265 1250,330 1440,300' stroke='rgba(255,255,255,0.02)' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        animation: waveSlide 14s ease-in-out infinite reverse;
+    }
+
+    @keyframes waveSlide {
+        0% {
+            transform: scale(1.1) translateX(-1%) scaleY(1);
+        }
+
+        50% {
+            transform: scale(1.1) translateX(1%) scaleY(1.04);
+        }
+
+        100% {
+            transform: scale(1.1) translateX(-1%) scaleY(1);
+        }
+    }
+
+    .hero-top,
+    .hero-body {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-top {
+        padding: 10px 48px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .hero-logo-box {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        border-radius: 50%;
+    }
+
+    .hero-logo-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .hero-socials {
+        display: flex;
+        gap: 8px;
+    }
+
+    .social-btn {
+        width: 36px;
+        height: 36px;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .social-btn svg {
+        width: 18px;
+        height: 18px;
+        fill: #fff;
+    }
+
+    .hero-body {
+        flex: 1;
+        display: flex;
+        padding: 8px 48px 14px;
+        width: 100%;
+        align-items: center;
+    }
+
+    .hero-content-wrapper {
+        max-width: 1100px;
+        width: 100%;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+    }
+
+    .player-left {
+        flex: 1.2;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 10px;
+        padding-right: 24px;
+    }
+
+    .player-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .player-title {
+        font-size: 86px;
+        font-weight: 900;
+        line-height: 0.95;
+        letter-spacing: -3px;
+        white-space: nowrap;
+    }
+
+    .player-freq {
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--accent);
+        line-height: 1.2;
+    }
+
+    /* ── COLUNA CENTRAL: BIG PLAY ── */
+    .player-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        flex: 0 0 auto;
+        padding: 0 32px;
+    }
+
+    .player-controls {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .ctrl-btn {
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        color: #fff;
+        opacity: 0.65;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .ctrl-btn:hover {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    .ctrl-btn svg {
+        width: 24px;
+        height: 24px;
+        fill: currentColor;
+    }
+
+    .play-btn-large {
+        width: 110px;
+        height: 110px;
+        background: var(--accent);
+        border-radius: 50%;
+        color: #0d5c24;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 6px 32px rgba(250, 204, 21, 0.50);
+        opacity: 1 !important;
+        flex-shrink: 0;
+        transition: transform 0.2s;
+    }
+
+    .play-btn-large:hover {
+        transform: scale(1.05);
+    }
+
+    .play-btn-large svg {
+        width: 48px !important;
+        height: 48px !important;
+        margin-left: 5px;
+    }
+
+    .volume-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .vol-track {
+        width: 140px;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 3px;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .vol-fill {
+        height: 100%;
+        background: var(--accent);
+        border-radius: 3px;
+        width: 80%;
+    }
+
+    .locutor-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding-left: 60px;
+    }
+
+    .loc-photo-wrap {
+        margin-bottom: 10px;
+        position: relative;
+    }
+
+    .loc-photo {
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        border: 4px solid var(--accent);
+        object-fit: cover;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+    }
+
+    .live-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1.5px solid rgba(239, 68, 68, 0.3);
+        padding: 5px 14px;
+        border-radius: 100px;
+        font-size: 11px;
+        font-weight: 800;
+        color: #ef4444;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+        white-space: nowrap;
+    }
+
+    .live-dot {
+        width: 8px;
+        height: 8px;
+        background: #ef4444;
+        border-radius: 50%;
+        box-shadow: 0 0 10px #ef4444;
+        animation: pulse 1.5s infinite;
+    }
+
+    .loc-prog-name {
+        font-size: 26px;
+        font-weight: 800;
+        margin-bottom: 4px;
+    }
+
+    .loc-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--accent);
+    }
+
+    .loc-time {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 4px;
+        font-weight: 500;
+        line-height: 1.4;
+        word-break: break-word;
+        max-width: 100%;
+    }
+
+    .loc-info-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+        justify-content: center;
+        flex-wrap: wrap;
+        /* Permite que o nome da música pule para baixo se for muito longo */
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.5;
+            transform: scale(1.2);
+        }
+    }
+
+    .player-right {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        padding: 8px 0 4px;
+        flex: 0.8;
+        padding-left: 40px;
+    }
+
+    .prox-wrap {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(0, 0, 0, 0.35);
+        border: 1.5px solid rgba(250, 204, 21, 0.35);
+        border-radius: 16px;
+        padding: 14px 18px;
+        width: 100%;
+    }
+
+    .prox-photo {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.30);
+        border: 2px solid #facc15;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .prox-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .prox-label {
+        color: #facc15;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.10em;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+    }
+
+    .prox-program {
+        font-size: 14px;
+        font-weight: 800;
+        color: #fff;
+        line-height: 1.2;
+    }
+
+    .prox-name {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.80);
+    }
+
+    @media (max-width: 640px) {
+        .hero-body {
+            padding: 32px 24px;
+            flex-direction: column;
+        }
+
+        .hero-content-wrapper {
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        /*PLAYER CSS */
+        .player-section {
+            border-right: none;
+            padding-right: 0;
+            align-items: center;
+            text-align: center;
+            padding: 32px 24px;
+        }
+
+        .player-title {
+            font-size: 38px;
+        }
+
+        .player-right {
+            padding-left: 0;
+        }
+
+        .prox-wrap {
+            align-self: center;
+        }
+
+        .play-btn-large {
+            width: 86px;
+            height: 86px;
+        }
+
+        .play-btn-large svg {
+            width: 34px !important;
+            height: 34px !important;
+        }
+
+        .ctrl-btn svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .player-controls {
+            gap: 28px;
+        }
+
+        .vol-track {
+            width: 200px;
+            height: 6px;
+        }
+    }
+</style>
+
+<section class="hero-container" id="mainHero">
+    <div class="hero-top">
+        <div class="hero-logo-box">
+            <img src="{% load static %}{% static 'Logo/logo.png' %}" alt="Logo">
+        </div>
+        <div class="hero-socials">
+            <a href="https://www.instagram.com/radiocentral" class="social-btn" target="_blank"><svg
+                    viewBox="0 0 24 24">
+                    <path
+                        d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm3.98-10.169a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z" />
+                </svg></a>
+            <a href="https://www.facebook.com/Central101FM/" class="social-btn" target="_blank"><svg
+                    viewBox="0 0 24 24">
+                    <path
+                        d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z" />
+                </svg></a>
+            <a href="https://www.youtube.com/@centralfm1019" class="social-btn" target="_blank"><svg
+                    viewBox="0 0 24 24">
+                    <path
+                        d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.872.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                </svg></a>
+        </div>
+    </div>
+
+    <div class="hero-body">
+        <div class="hero-content-wrapper">
+            <!-- TEXTO PRINCIPAL TELA -->
+            <div class="player-left">
+                <span class="player-label">No Ar Agora</span>
+                <h1 class="player-title">Central FM</h1>
+                <p class="player-freq">Tá na Central,<br>Tá Legal!</p>
+            </div>
+
+
+            <!-- PLAYER PRINCIPAL -->
+            <div class="player-center">
+                <button class="ctrl-btn play-btn-large js-play-btn" onclick="togglePlay()">
+                    <svg class="js-play-icon" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                    </svg>
+                    <svg class="js-pause-icon" viewBox="0 0 24 24" style="display:none;">
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                    </svg>
+                </button>
+                <div class="player-controls">
+                    <button class="ctrl-btn vol-btn" onclick="changeVolume(-0.1)" title="Diminuir volume">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 13H5v-2h14v2z" />
+                        </svg>
+                    </button>
+                    <button class="ctrl-btn vol-btn" onclick="changeVolume(0.1)" title="Aumentar volume">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="volume-box">
+                    <svg viewBox="0 0 24 24" style="width:16px; fill:#fff; opacity:0.5;">
+                        <path
+                            d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
+                    </svg>
+                    <div class="vol-track">
+                        <div class="vol-fill" id="volFill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="player-right">
+                <div class="loc-current"
+                    style="padding-bottom: 20px; width: 100%; display: flex; flex-direction: column; align-items: center;">
+                    <div class="loc-photo-wrap">
+                        {% if programa_agora.locutor.foto %}
+                        <img src="{{ programa_agora.locutor.foto.url }}" alt="{{ programa_agora.locutor.nome }}"
+                            class="loc-photo">
+                        {% else %}
+                        <div class="loc-photo"
+                            style="background:#0d5c24; display:flex; align-items:center; justify-content:center; color:var(--accent); font-weight:800; font-size:42px;">
+                            C</div>
+                        {% endif %}
+                    </div>
+                    <div class="loc-info">
+                        <div class="loc-info-top">
+                            <div class="live-badge">
+                                <div class="live-dot"></div>AO VIVO
+                            </div>
+                            <span class="loc-time js-status-text">No Ar</span>
+                        </div>
+                        <h3 class="loc-prog-name">{% if programa_agora %}{{ programa_agora.nome }}{% else %}101 Mais Tocadas{% endif %}</h3>
+                        <span class="loc-name">{% if programa_agora and programa_agora.locutor %}com {{ programa_agora.locutor.nome }}{% else %}com Equipe Central{% endif %}</span>
+                    </div>
+                </div>
+
+                <div style="width: 100%; height: 1px; background: rgba(255,255,255,0.10); margin-bottom: 20px;"></div>
+
+                <div class="prox-wrap">
+                    <div class="prox-photo">
+                        {% if proximo_programa.locutor.foto %}
+                        <img src="{{ proximo_programa.locutor.foto.url }}" alt="{{ proximo_programa.locutor.nome }}"
+                            style="width:100%; height:100%; object-fit:cover;">
+                        {% else %}
+                        <div
+                            style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.35); font-weight:700; font-size:14px;">
+                            C</div>
+                        {% endif %}
+                    </div>
+                    <div class="prox-info">
+                        <div class="prox-label">Próxima atração</div>
+                        <div class="prox-program">{% if proximo_programa %}{{ proximo_programa.nome }}{% else %}Programação Especial{% endif %}</div>
+                        <div class="prox-name">{% if proximo_programa and proximo_programa.locutor %}com {{ proximo_programa.locutor.nome }}{% else %}com Equipe Central{% endif %}</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

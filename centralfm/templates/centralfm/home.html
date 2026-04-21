@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central FM 101.1 — Tá na Central, Tá Legal!</title>
+    
+    <!-- Tipografia Exclusiva: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    {% load static %}
+    <link rel="icon" type="image/png" href="{% static 'Logo/logo.png' %}">
+
+    <style>
+        :root {
+            --hero-bg: #0e6e2a;
+            --hero-grad: linear-gradient(135deg, #0a5a22 0%, #0e6e2a 50%, #1a8c38 100%);
+            --accent: #facc15;
+            --accent-glow: 0 4px 24px rgba(250, 204, 21, 0.40);
+            --border-white: rgba(255, 255, 255, 0.10);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.65);
+            --text-muted: rgba(255, 255, 255, 0.45);
+            --bg-bottom: #ffffff;
+            --border-bottom: #e8e8e8;
+            --footer-bg: #0a1f0f;
+            --footer-text: rgba(255, 255, 255, 0.30);
+            --amarelo: #facc15;
+            --verdao: #0d5c24;
+            --verde-escuro: #0a3d1a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-bottom);
+            color: #1a1a1a;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            letter-spacing: -0.5px;
+        }
+
+        /* Ocultar barra de rolagem (Minimalismo Total) */
+        html, body {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+        }
+        ::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+
+        /* Transições Globais */
+        a, button {
+            transition: all 0.2s ease;
+        }
+
+        .main-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-wrapper">
+        <!-- BLOCO 1: HERO INTEGRADO -->
+        {% include 'centralfm/hero.html' %}
+
+        <!-- BLOCO 2: SEÇÃO INFERIOR -->
+        {% include 'centralfm/carrossel.html' %}
+
+        <!-- BLOCO 3: GANHADORES DA SEMANA -->
+        {% include 'centralfm/ganhadores.html' %}
+
+        <!-- BLOCO 4: RODAPÉ -->
+
+        {% include 'centralfm/footer.html' %}
+    </div>
+
+    <!-- LÓGICA DO PLAYER E ELEMENTO DE ÁUDIO (Invisível) -->
+    {% include 'centralfm/player.html' %}
+
+</body>
+</html>

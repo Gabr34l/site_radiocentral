@@ -1,0 +1,259 @@
+{% load static %}
+<style>
+    .bottom-section {
+        background: #fff;
+        border-top: 1px solid #e8e8e8;
+        padding: 18px 32px;
+    }
+
+    .bottom-section-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+        display: flex;
+        gap: 14px;
+        align-items: stretch;
+    }
+
+    .carousel-container {
+        flex: 1;
+        overflow: hidden;
+        border-radius: 16px;
+        position: relative;
+    }
+
+    /* Fade indicator on right side */
+    .carousel-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 80px;
+        background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8));
+        pointer-events: none;
+        z-index: 5;
+    }
+
+    .carousel-track {
+        display: flex;
+        gap: 14px;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+
+        -ms-overflow-style: none;
+        /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
+    }
+
+    .carousel-track::-webkit-scrollbar {
+        display: none;
+    }
+
+    .static-container {
+        flex-shrink: 0;
+        width: 20%;
+    }
+
+    .carousel-card {
+        min-width: calc(25% - 10.5px);
+        /* 4 cards rotating in track */
+        height: 110px;
+        border-radius: 16px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background-size: cover;
+        background-position: center;
+        text-decoration: none;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .carousel-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Overlay sutil para indicar o clique */
+    .carousel-track .carousel-card::after {
+        content: 'CLIQUE PARA PARTICIPAR';
+        position: absolute;
+        bottom: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 8.5px;
+        font-weight: 800;
+        color: rgba(255, 255, 255, 0.75);
+        background: rgba(0, 0, 0, 0.4);
+        padding: 4px 10px;
+        border-radius: 20px;
+        white-space: nowrap;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        backdrop-filter: blur(2px);
+        transition: all 0.3s ease;
+        pointer-events: none;
+        /* Garante que o clique passe direto pro card */
+    }
+
+    .carousel-track .carousel-card:hover::after {
+        color: rgba(255, 255, 255, 1);
+        background: rgba(0, 0, 0, 0.7);
+        transform: translateX(-50%) scale(1.05);
+    }
+
+    /* Overlay sutil exclusivo para o card de Anúncio */
+    .static-container .carousel-card::after {
+        content: 'CLIQUE PARA ANUNCIAR';
+        position: absolute;
+        bottom: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 8.5px;
+        font-weight: 800;
+        color: rgba(255, 255, 255, 0.75);
+        background: rgba(0, 0, 0, 0.4);
+        padding: 4px 10px;
+        border-radius: 20px;
+        white-space: nowrap;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        backdrop-filter: blur(2px);
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+
+    .static-container .carousel-card:hover::after {
+        color: rgba(255, 255, 255, 1);
+        background: rgba(0, 0, 0, 0.8);
+        transform: translateX(-50%) scale(1.05);
+    }
+
+    .carousel-card.verde {
+        background: linear-gradient(135deg, #0d5c24 0%, #1a8c38 100%);
+        color: #facc15;
+        box-shadow: 0 4px 15px rgba(13, 92, 36, 0.2);
+        line-height: 1.4;
+    }
+
+    .carousel-card.anuncio {
+        background: #fafafa;
+        border: 1.5px dashed #e0e0e0;
+        color: #888;
+    }
+
+    @media (max-width: 1024px) {
+        .carousel-card {
+            min-width: calc(33.333% - 9.33px);
+            height: 100px;
+        }
+
+        .static-container {
+            width: 30%;
+        }
+    }
+
+    @media (max-width: 800px) {
+        .bottom-section-wrapper {
+            flex-direction: column;
+        }
+
+        .static-container {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .bottom-section {
+            padding: 24px 16px;
+        }
+
+        .bottom-section-wrapper {
+            gap: 14px;
+        }
+
+        .carousel-track {
+            flex-direction: column; /* Empilha os cartões verticalmente */
+            overflow: visible; /* Remove a barra de rolagem */
+        }
+
+        .carousel-card {
+            width: 100%;
+            min-width: 100%;
+            height: 125px; /* Ligeiramente mais alto no celular para boa leitura */
+        }
+
+        .static-container {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="bottom-section">
+    <div class="bottom-section-wrapper">
+        <div class="carousel-container">
+            <div class="carousel-track" id="promoCarousel">
+                <!-- Promoções Oficiais da Pasta Static -->
+                <a href="https://wa.me/5534996491118?text=Quero%20participar%20da%20Quinta%20da%20Pizza!"
+                    target="_blank" class="carousel-card"
+                    style="background-image: url('{% get_static_prefix %}Promocao/quinta_da_pizza.jpg');"></a>
+                
+                <a href="https://wa.me/5534996491118?text=Quero%20participar%20do%20Aniversário%20Premiado!"
+                    target="_blank" class="carousel-card"
+                    style="background-image: url('{% get_static_prefix %}Promocao/aniversario_premiado.jpg');"></a>
+                
+                <a href="https://wa.me/5534996491118?text=Quero%20participar%20da%20Grana%20Extra!" 
+                    target="_blank" class="carousel-card"
+                    style="background-image: url('{% get_static_prefix %}Promocao/grana_extra.jpg');"></a>
+                
+                <a href="https://wa.me/5534996491118?text=Quero%20participar%20do%20Dinheiro%20na%20Mao!"
+                    target="_blank" class="carousel-card"
+                    style="background-image: url('{% get_static_prefix %}Promocao/dinheiro_na_mao.jpg');"></a>
+                
+                <a href="https://wa.me/5534996491118?text=Quero%20participar%20da%20Placa%20Premiada!" 
+                    target="_blank" class="carousel-card"
+                    style="background-image: url('{% get_static_prefix %}Promocao/placa_premiada.jpg');"></a>
+                
+                <a href="https://wa.me/5534996491118?text=Quero%20participar%20da%20Resenha%20da%20Central!"
+                    target="_blank" class="carousel-card"
+                    style="background-image: url('{% get_static_prefix %}Promocao/resenha_da_central.jpg');"></a>
+            </div>
+        </div>
+
+        <div class="static-container">
+            <a href="https://wa.me/5534996491118?text=Olá,%20gostaria%20de%20anunciar%20na%20Rádio%20Central!"
+                target="_blank" class="carousel-card"
+                style="background-image: url('{% get_static_prefix %}Promocao/anuncie_aqui.png'); width: 100%; min-width: 0; box-shadow: none;"></a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const carouselBar = document.getElementById('promoCarousel');
+    if (carouselBar) {
+        setInterval(() => {
+            // No celular os itens estão empilhados verticalmente, então evitamos o scroll
+            if (window.innerWidth <= 640) return;
+
+            const firstCard = carouselBar.querySelector('.carousel-card');
+            if (firstCard) {
+                const cardWidth = firstCard.offsetWidth + 14; // width + gap
+                carouselBar.scrollBy({ left: cardWidth, behavior: 'smooth' });
+
+                // Reset to start if at the end
+                if (carouselBar.scrollLeft >= carouselBar.scrollWidth - carouselBar.clientWidth - 10) {
+                    carouselBar.scrollTo({ left: 0, behavior: 'smooth' });
+                }
+            }
+        }, 3500);
+    }
+</script>

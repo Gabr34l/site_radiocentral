@@ -1,0 +1,31 @@
+/* Fix para a logo gigante na tela de login/logout do Jazzmin */
+.login-box .login-logo img {
+    max-height: 120px;
+    width: auto;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.login-box .login-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Fundo verde Premium CSS aplicado*/
+body.login-page {
+    background:
+        radial-gradient(ellipse at 50% 10%, rgba(46, 204, 90, 0.55) 0%, transparent 50%),
+        radial-gradient(ellipse at 15% 85%, rgba(26, 122, 48, 0.45) 0%, transparent 45%),
+        radial-gradient(ellipse at 85% 75%, rgba(15, 92, 34, 0.40) 0%, transparent 40%),
+        radial-gradient(ellipse at 70% 40%, rgba(20, 110, 40, 0.30) 0%, transparent 35%),
+        #0a3d1a !important;
+    background-attachment: fixed !important;
+}
+
+
+/* Ajuste fino na logo da barra lateral */
+.brand-link .brand-image {
+    max-height: 33px !important;
+}

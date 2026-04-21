@@ -1,0 +1,128 @@
+<audio id="mainAudio" preload="auto">
+    <source src="https://8036.brasilstream.com.br/stream" type="audio/mpeg">
+</audio>
+
+<script>
+    const audio = document.getElementById('mainAudio');
+    const statusTexts = document.querySelectorAll('.js-status-text');
+    const playIcons = document.querySelectorAll('.js-play-icon');
+    const pauseIcons = document.querySelectorAll('.js-pause-icon');
+    const volFill = document.getElementById('volFill');
+
+    let isPlaying = false;
+
+    function setAllStatus(text) {
+        statusTexts.forEach(el => el.innerText = text);
+    }
+
+    function togglePlay() {
+        if (!audio) return;
+
+        if (isPlaying) {
+            audio.pause();
+            isPlaying = false;
+            updateUI(false);
+        } else {
+            setAllStatus("Conectando...");
+            audio.load();
+            const playPromise = audio.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    isPlaying = true;
+                    updateUI(true);
+                }).catch(error => {
+                    console.error("Erro ao reproduzir:", error);
+                    setAllStatus("Erro ao carregar");
+                    isPlaying = false;
+                    updateUI(false);
+                });
+            }
+        }
+    }
+
+    function updateUI(playing) {
+        if (playing) {
+            playIcons.forEach(el => el.style.display = "none");
+            pauseIcons.forEach(el => el.style.display = "block");
+        } else {
+            playIcons.forEach(el => el.style.display = "block");
+            pauseIcons.forEach(el => el.style.display = "none");
+            setAllStatus("No Ar");
+        }
+    }
+
+    // Volume Visual
+    const volTrack = document.querySelector('.vol-track');
+    if (volTrack && volFill) {
+        volTrack.addEventListener('click', (e) => {
+            const rect = volTrack.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const width = rect.width;
+            const vol = Math.max(0, Math.min(1, x / width));
+            audio.volume = vol;
+            volFill.style.width = (vol * 100) + '%';
+        });
+    }
+
+    function changeVolume(delta) {
+        if (!audio) return;
+        const newVol = Math.max(0, Math.min(1, audio.volume + delta));
+        audio.volume = newVol;
+        if (volFill) volFill.style.width = (newVol * 100) + '%';
+    }
+
+    async function updateMetadata() {
+        if (!isPlaying) return;
+        
+        try {
+            const response = await fetch('/api/musica/');
+            const data = await response.json();
+            const nomeDaMusica = data.musica || '';
+            
+            if (isPlaying) {
+                if (nomeDaMusica && nomeDaMusica.trim().length > 0) {
+                    setAllStatus(nomeDaMusica);
+                } else {
+                    setAllStatus("Ao Vivo");
+                }
+            }
+        } catch (error) {
+            console.error('Erro ao buscar metadados:', error);
+            if (isPlaying) setAllStatus("Ao Vivo");
+        }
+    }
+
+    // Atualiza a cada 50 segundos como no original
+    setInterval(updateMetadata, 50000);
+
+    let waitingTimer = null;
+
+    if (audio) {
+        audio.onwaiting = function () {
+            if (!isPlaying) return;
+            // Só mostra "Conectando..." se demorar mais de 2.5s
+            waitingTimer = setTimeout(() => {
+                if (isPlaying) setAllStatus("Conectando...");
+            }, 2500);
+        };
+
+        audio.onplaying = function () {
+            // Cancela o timer de "Conectando..." se o áudio retomar rápido
+            if (waitingTimer) {
+                clearTimeout(waitingTimer);
+                waitingTimer = null;
+            }
+            if (isPlaying) {
+                updateMetadata();
+            }
+        };
+
+        audio.onerror = function () {
+            if (waitingTimer) clearTimeout(waitingTimer);
+            setAllStatus("Erro na Conexão");
+            updateUI(false);
+            isPlaying = false;
+        };
+    }
+</script>
