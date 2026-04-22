@@ -1,0 +1,89 @@
+GUIA DEFINITIVO: DEPLOY DE PROJETOS DJANGO NO PYTHONANYWHERE
+==========================================================
+
+Este guia serve como base para subir qualquer projeto Django padrão para a plataforma PythonAnywhere.
+
+1. PREPARAÇÃO LOCAL (No seu computador)
+---------------------------------------
+Antes de subir, certifique-se de que o projeto está pronto para produção:
+
+A. ALLOWED_HOSTS: No seu 'settings.py', adicione o seu domínio do PythonAnywhere:
+   ALLOWED_HOSTS = ['seu-usuario.pythonanywhere.com', 'localhost', '127.0.0.1']
+
+B. REQUIREMENTS: Crie a lista de dependências que o servidor precisará instalar:
+   Comando: pip freeze > requirements.txt
+
+C. STATIC FILES: Certifique-se de que o STATIC_ROOT está configurado no 'settings.py':
+   STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+   (Dica: Use a biblioteca 'whitenoise' para facilitar o serviço de arquivos estáticos).
+
+
+2. SUBINDO O CÓDIGO PARA O SERVIDOR
+-----------------------------------
+A forma mais recomendada é via Git (GitHub/GitLab):
+
+A. No terminal (Bash) do PythonAnywhere:
+   git clone https://github.com/seu-usuario/seu-repositorio.git
+
+
+3. AMBIENTE VIRTUAL (VIRTUALENV)
+--------------------------------
+No terminal do PythonAnywhere, crie um ambiente para isolar as bibliotecas do projeto:
+
+A. Criar: mkvirtualenv --python=/usr/bin/python3.10 nome-do-projeto-env
+B. Instalar dependências: pip install -r requirements.txt
+
+
+4. CONFIGURAÇÃO NA ABA "WEB" (Painel do PythonAnywhere)
+-------------------------------------------------------
+Vá na aba "Web" do painel e configure:
+
+A. SOURCE CODE: Caminho para a pasta principal do projeto.
+   Ex: /home/seu-usuario/seu-projeto
+
+B. VIRTUALENV: Caminho do ambiente criado no passo 3.
+   Ex: /home/seu-usuario/.virtualenvs/nome-do-projeto-env
+
+C. STATIC FILES (Seção específica na aba Web):
+   - URL: /static/  | Path: /home/seu-usuario/seu-projeto/staticfiles
+   - URL: /media/   | Path: /home/seu-usuario/seu-projeto/media
+
+
+5. CONFIGURAÇÃO DO ARQUIVO WSGI
+-------------------------------
+Ainda na aba "Web", clique no link "WSGI configuration file". Apague o conteúdo e cole o padrão Django (ajustando os caminhos):
+
+---
+import os
+import sys
+
+path = '/home/seu-usuario/seu-projeto'
+if path not in sys.path:
+    sys.path.append(path)
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'nome_da_pasta_do_projeto.settings'
+
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
+---
+
+
+6. FINALIZAÇÃO NO TERMINAL DO SERVIDOR
+--------------------------------------
+Volte ao terminal (Bash) do PythonAnywhere e rode:
+
+A. Migrar banco de dados: python manage.py migrate
+B. Coletar estáticos: python manage.py collectstatic
+C. Criar superusuário (Admin): python manage.py createsuperuser
+
+
+7. O TOQUE FINAL
+----------------
+Volte na aba "Web" e clique no botão verde gigante "RELOAD".
+Seu site deve estar online agora!
+
+
+DICAS DE OURO:
+- Se der erro, verifique o "Error Log" no final da aba Web.
+- Use um arquivo '.env' para guardar senhas e chaves secretas, nunca as deixe expostas no settings.py.
+- O PythonAnywhere não suporta bancos de dados que não sejam MySQL ou SQLite (na conta gratuita).

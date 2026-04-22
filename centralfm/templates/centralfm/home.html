@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Central FM 101.1 — Tá na Central, Tá Legal!</title>
-    
-    <!-- Tipografia Exclusiva: Plus Jakarta Sans -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     {% load static %}
     <link rel="icon" type="image/png" href="{% static 'Logo/logo.png' %}">
 
@@ -46,22 +47,31 @@
             overflow-x: hidden;
         }
 
-        h1, h2, h3, h4 {
+        h1,
+        h2,
+        h3,
+        h4 {
             letter-spacing: -0.5px;
         }
 
         /* Ocultar barra de rolagem (Minimalismo Total) */
-        html, body {
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE/Edge */
+        html,
+        body {
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE/Edge */
         }
+
         ::-webkit-scrollbar {
-            display: none; /* Chrome/Safari */
+            display: none;
+            /* Chrome/Safari */
         }
 
 
         /* Transições Globais */
-        a, button {
+        a,
+        button {
             transition: all 0.2s ease;
         }
 
@@ -72,6 +82,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="main-wrapper">
@@ -93,4 +104,5 @@
     {% include 'centralfm/player.html' %}
 
 </body>
+
 </html>
