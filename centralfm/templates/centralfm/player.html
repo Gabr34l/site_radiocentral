@@ -11,6 +11,11 @@
 
     let isPlaying = false;
 
+    // Inicializa o volume em 80% para sincronizar o áudio com a barra visual
+    const INITIAL_VOLUME = 0.8;
+    audio.volume = INITIAL_VOLUME;
+    if (volFill) volFill.style.width = (INITIAL_VOLUME * 100) + '%';
+
     function setAllStatus(text) {
         statusTexts.forEach(el => el.innerText = text);
     }
