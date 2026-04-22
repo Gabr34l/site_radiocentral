@@ -182,9 +182,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 36px;
-        height: 36px;
+        width: 44px;
+        height: 44px;
         transition: opacity 0.2s, transform 0.2s;
+        touch-action: manipulation; /* Impede zoom duplo-toque no iOS */
+        -webkit-tap-highlight-color: transparent; /* Remove flash cinza no iOS */
     }
 
     .ctrl-btn:hover {
@@ -211,6 +213,8 @@
         opacity: 1 !important;
         flex-shrink: 0;
         transition: transform 0.2s;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
     }
 
     .play-btn-large:hover {
