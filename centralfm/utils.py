@@ -1,3 +1,15 @@
+"""
+utils.py — Funções utilitárias compartilhadas da aplicação Central FM.
+
+Este módulo contém lógica de negócio reutilizável que não pertence
+diretamente a uma view ou model específica:
+
+  get_current_and_next_program() — Detecta o programa no ar agora e o próximo,
+                                    com base no horário de Brasília.
+
+  normalize_radio_text()         — Corrige caracteres especiais e acentos
+                                    corrompidos nos metadados do stream de rádio.
+"""
 import os
 from datetime import datetime
 from zoneinfo import ZoneInfo

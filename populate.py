@@ -1,7 +1,24 @@
+"""
+populate.py — Script de população inicial do banco de dados.
+
+Este script cria automaticamente todos os Locutores e Programas
+da grade de programação da Rádio Central FM 101.1 no banco de dados.
+
+USO:
+    python populate.py
+
+ATENÇÃO:
+    O script APAGA todos os Programas existentes antes de recriar (linha 65).
+    Rode apenas quando quiser resetar a grade de programação do zero.
+    Os Locutores são criados com get_or_create (não duplica se já existirem).
+
+Dias cobertos: Segunda a Sexta (grade padrão), Sábado e Domingo.
+"""
 import os
 import django
 from datetime import time
 
+# Configura o Django antes de importar qualquer model
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'setup.settings')
 django.setup()
 

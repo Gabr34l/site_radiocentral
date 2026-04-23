@@ -1,3 +1,17 @@
+"""
+setup/settings.py — Configurações centrais do projeto Django.
+
+Este arquivo controla TUDO no projeto: banco de dados, segurança,
+arquivos estáticos, internacionalização, apps instalados, etc.
+
+Variáveis sensíveis (SECRET_KEY, DATABASE_URL, DEBUG) são lidas
+do arquivo .env via python-dotenv, para não ficarem expostas no código.
+
+Ambientes suportados:
+  - Desenvolvimento local: DEBUG=True, SQLite, arquivos servidos pelo Django
+  - Produção (PythonAnywhere): DEBUG=False, PostgreSQL/MySQL via DATABASE_URL,
+    arquivos estáticos servidos pelo servidor web (WhiteNoise para estáticos)
+"""
 from pathlib import Path
 import os
 import dj_database_url
