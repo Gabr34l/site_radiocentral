@@ -11,7 +11,6 @@
 
     let isPlaying = false;
 
-    // Inicializa o volume em 80% para sincronizar o áudio com a barra visual
     const INITIAL_VOLUME = 0.8;
     audio.volume = INITIAL_VOLUME;
     if (volFill) volFill.style.width = (INITIAL_VOLUME * 100) + '%';
@@ -57,7 +56,6 @@
         }
     }
 
-    // Volume Visual
     const volTrack = document.querySelector('.vol-track');
     if (volTrack && volFill) {
         volTrack.addEventListener('click', (e) => {
@@ -80,7 +78,6 @@
     function normalizeRadioText(text) {
         if (!text) return "";
         
-        // Mapa de correções para artefatos de codificação de rádio (escape sequences)
         const mapa = {
             '~a': 'ã', '~o': 'õ', '~e': 'ê', '~c': 'ç', '~n': 'ñ', 
             '~A': 'Ã', '~O': 'Õ', '~E': 'Ê', '~C': 'Ç', '~N': 'Ñ',
@@ -94,23 +91,19 @@
             '&amp;': '&', '&#039;': "'", '&quot;': '"'
         };
 
-        // Decodificação de Mojibake comum (UTF-8 as Latin-1)
         try {
-            // Tenta converter de binário para UTF-8 se encontrar padrões de erro
             if (/[\u00c0-\u00ff]/.test(text)) {
                 text = decodeURIComponent(escape(text));
             }
-        } catch (e) { /* ignore */ }
+        } catch (e) { }
 
         let clean = text.trim();
         for (const [erro, acerto] of Object.entries(mapa)) {
             clean = clean.split(erro).join(acerto);
         }
 
-        // Limpeza de Tags HTML que podem vir no metadado
         clean = clean.replace(/<[^>]*>?/gm, '');
 
-        // Estética: Capitalize se estiver tudo em Caps
         if (clean === clean.toUpperCase() && clean.length > 5) {
             clean = clean.toLowerCase().replace(/(^\w|\s\w)/g, m => m.toUpperCase());
         }
@@ -124,7 +117,6 @@
         let nomeDaMusica = "";
         
         try {
-            // Tentativa 1: Busca via Servidor
             const response = await fetch('/api/musica/');
             const data = await response.json();
             if (data.musica && !data.musica.includes("Sintonize")) {
@@ -132,7 +124,6 @@
             }
         } catch (e) { }
 
-        // Tentativa 2: Busca via Navegador (Fallback)
         if (!nomeDaMusica) {
             try {
                 const url = 'https://api.brasilstream.com.br/musica_agora/id:1185863148;';
@@ -151,7 +142,6 @@
         }
     }
 
-    // Atualiza a cada 50 segundos como no original
     setInterval(updateMetadata, 50000);
 
     let waitingTimer = null;
@@ -159,14 +149,12 @@
     if (audio) {
         audio.onwaiting = function () {
             if (!isPlaying) return;
-            // Só mostra "Conectando..." se demorar mais de 2.5s
             waitingTimer = setTimeout(() => {
                 if (isPlaying) setAllStatus("Conectando...");
             }, 2500);
         };
 
         audio.onplaying = function () {
-            // Cancela o timer de "Conectando..." se o áudio retomar rápido
             if (waitingTimer) {
                 clearTimeout(waitingTimer);
                 waitingTimer = null;

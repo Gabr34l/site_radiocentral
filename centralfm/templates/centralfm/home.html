@@ -54,22 +54,17 @@
             letter-spacing: -0.5px;
         }
 
-        /* Ocultar barra de rolagem (Minimalismo Total) */
         html,
         body {
             scrollbar-width: none;
-            /* Firefox */
             -ms-overflow-style: none;
-            /* IE/Edge */
         }
 
         ::-webkit-scrollbar {
             display: none;
-            /* Chrome/Safari */
         }
 
 
-        /* Transições Globais */
         a,
         button {
             transition: all 0.2s ease;
@@ -86,21 +81,12 @@
 <body>
 
     <div class="main-wrapper">
-        <!-- BLOCO 1: HERO INTEGRADO -->
         {% include 'centralfm/hero.html' %}
-
-        <!-- BLOCO 2: SEÇÃO INFERIOR -->
         {% include 'centralfm/carrossel.html' %}
-
-        <!-- BLOCO 3: GANHADORES DA SEMANA -->
         {% include 'centralfm/ganhadores.html' %}
-
-        <!-- BLOCO 4: RODAPÉ -->
-
         {% include 'centralfm/footer.html' %}
     </div>
 
-    <!-- LÓGICA DO PLAYER E ELEMENTO DE ÁUDIO (Invisível) -->
     {% include 'centralfm/player.html' %}
 
 </body>

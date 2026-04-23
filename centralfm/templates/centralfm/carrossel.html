@@ -22,7 +22,6 @@
         position: relative;
     }
 
-    /* Fade indicator on right side */
     .carousel-container::after {
         content: '';
         position: absolute;
@@ -42,9 +41,7 @@
         scroll-behavior: smooth;
 
         -ms-overflow-style: none;
-        /* IE and Edge */
         scrollbar-width: none;
-        /* Firefox */
     }
 
     .carousel-track::-webkit-scrollbar {
@@ -58,7 +55,6 @@
 
     .carousel-card {
         min-width: calc(25% - 10.5px);
-        /* 4 cards rotating in track */
         height: 110px;
         border-radius: 16px;
         padding: 16px;
@@ -83,7 +79,6 @@
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     }
 
-    /* Overlay sutil para indicar o clique */
     .carousel-track .carousel-card::after {
         content: 'CLIQUE PARA PARTICIPAR';
         position: absolute;
@@ -102,7 +97,6 @@
         backdrop-filter: blur(2px);
         transition: all 0.3s ease;
         pointer-events: none;
-        /* Garante que o clique passe direto pro card */
     }
 
     .carousel-track .carousel-card:hover::after {
@@ -111,7 +105,6 @@
         transform: translateX(-50%) scale(1.05);
     }
 
-    /* Overlay sutil exclusivo para o card de Anúncio */
     .static-container .carousel-card::after {
         content: 'CLIQUE PARA ANUNCIAR';
         position: absolute;
@@ -202,7 +195,6 @@
     <div class="bottom-section-wrapper">
         <div class="carousel-container">
             <div class="carousel-track" id="promoCarousel">
-                <!-- Promoções Oficiais da Pasta Static -->
                 <a href="https://wa.me/5534996491118?text=Quero%20participar%20da%20Quinta%20da%20Pizza!"
                     target="_blank" class="carousel-card"
                     style="background-image: url('{% get_static_prefix %}Promocao/quinta_da_pizza.jpg');"></a>
@@ -241,7 +233,6 @@
     const carouselBar = document.getElementById('promoCarousel');
     if (carouselBar) {
         setInterval(() => {
-            // No celular os itens estão empilhados verticalmente, então evitamos o scroll
             if (window.innerWidth <= 640) return;
 
             const firstCard = carouselBar.querySelector('.carousel-card');
@@ -249,7 +240,6 @@
                 const cardWidth = firstCard.offsetWidth + 14; // width + gap
                 carouselBar.scrollBy({ left: cardWidth, behavior: 'smooth' });
 
-                // Reset to start if at the end
                 if (carouselBar.scrollLeft >= carouselBar.scrollWidth - carouselBar.clientWidth - 10) {
                     carouselBar.scrollTo({ left: 0, behavior: 'smooth' });
                 }

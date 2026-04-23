@@ -14,7 +14,6 @@
         overflow: hidden;
     }
 
-    /* ONDAS ANIMADAS */
     .hero-container::before,
     .hero-container::after {
         content: '';
@@ -155,7 +154,6 @@
         line-height: 1.2;
     }
 
-    /* ── COLUNA CENTRAL: BIG PLAY ── */
     .player-center {
         display: flex;
         flex-direction: column;
@@ -185,8 +183,8 @@
         width: 44px;
         height: 44px;
         transition: opacity 0.2s, transform 0.2s;
-        touch-action: manipulation; /* Impede zoom duplo-toque no iOS */
-        -webkit-tap-highlight-color: transparent; /* Remove flash cinza no iOS */
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
     }
 
     .ctrl-btn:hover {
@@ -326,7 +324,6 @@
         margin-bottom: 8px;
         justify-content: center;
         flex-wrap: wrap;
-        /* Permite que o nome da música pule para baixo se for muito longo */
     }
 
     @keyframes pulse {
@@ -413,7 +410,6 @@
             gap: 40px;
         }
 
-        /*PLAYER CSS */
         .player-section {
             border-right: none;
             padding-right: 0;
@@ -486,7 +482,6 @@
 
     <div class="hero-body">
         <div class="hero-content-wrapper">
-            <!-- TEXTO PRINCIPAL TELA -->
             <div class="player-left">
                 <span class="player-label">No Ar Agora</span>
                 <h1 class="player-title">Central FM</h1>
@@ -494,7 +489,6 @@
             </div>
 
 
-            <!-- PLAYER PRINCIPAL -->
             <div class="player-center">
                 <button class="ctrl-btn play-btn-large js-play-btn" onclick="togglePlay()">
                     <svg class="js-play-icon" viewBox="0 0 24 24">
