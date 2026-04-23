@@ -11,8 +11,12 @@
 
     let isPlaying = false;
 
+    // iOS Safari ignora audio.volume (é somente leitura no iOS).
+    // Por isso rastreamos o volume na nossa própria variável,
+    // nunca lendo de volta audio.volume como fonte da verdade.
     const INITIAL_VOLUME = 0.8;
-    audio.volume = INITIAL_VOLUME;
+    let currentVolume = INITIAL_VOLUME;
+    try { audio.volume = INITIAL_VOLUME; } catch(e) {}
     if (volFill) volFill.style.width = (INITIAL_VOLUME * 100) + '%';
 
     function setAllStatus(text) {
@@ -27,7 +31,7 @@
             isPlaying = false;
             updateUI(false);
         } else {
-            setAllStatus("Conectando...");
+            setAllStatus("Conectado");
             audio.load();
             const playPromise = audio.play();
 
@@ -56,30 +60,43 @@
         }
     }
 
+    // Função auxiliar para aplicar o volume na barra e no áudio
+    function applyVolume(vol) {
+        currentVolume = Math.max(0, Math.min(1, vol));
+        try { audio.volume = currentVolume; } catch(e) {} // Ignorado no iOS
+        if (volFill) volFill.style.width = (currentVolume * 100) + '%';
+    }
+
+    // Barra de volume clicável (desktop)
     const volTrack = document.querySelector('.vol-track');
     if (volTrack && volFill) {
+        // Suporte a clique (desktop/Android)
         volTrack.addEventListener('click', (e) => {
             const rect = volTrack.getBoundingClientRect();
             const x = e.clientX - rect.left;
-            const width = rect.width;
-            const vol = Math.max(0, Math.min(1, x / width));
-            audio.volume = vol;
-            volFill.style.width = (vol * 100) + '%';
+            applyVolume(x / rect.width);
         });
+
+        // Suporte a toque (iOS/mobile) — usa changedTouches para obter posição
+        volTrack.addEventListener('touchend', (e) => {
+            e.preventDefault(); // Evita que o 'click' dispare em seguida
+            const rect = volTrack.getBoundingClientRect();
+            const x = e.changedTouches[0].clientX - rect.left;
+            applyVolume(x / rect.width);
+        }, { passive: false });
     }
 
+    // Botões + e -: usa currentVolume (nunca audio.volume) para evitar o bug do iOS
     function changeVolume(delta) {
         if (!audio) return;
-        const newVol = Math.max(0, Math.min(1, audio.volume + delta));
-        audio.volume = newVol;
-        if (volFill) volFill.style.width = (newVol * 100) + '%';
+        applyVolume(currentVolume + delta);
     }
 
     function normalizeRadioText(text) {
         if (!text) return "";
-        
+
         const mapa = {
-            '~a': 'ã', '~o': 'õ', '~e': 'ê', '~c': 'ç', '~n': 'ñ', 
+            '~a': 'ã', '~o': 'õ', '~e': 'ê', '~c': 'ç', '~n': 'ñ',
             '~A': 'Ã', '~O': 'Õ', '~E': 'Ê', '~C': 'Ç', '~N': 'Ñ',
             '´a': 'á', '´e': 'é', '´i': 'í', '´o': 'ó', '´u': 'ú',
             '´A': 'Á', '´E': 'É', '´I': 'Í', '´O': 'Ó', '´U': 'Ú',
@@ -113,9 +130,9 @@
 
     async function updateMetadata() {
         if (!isPlaying) return;
-        
+
         let nomeDaMusica = "";
-        
+
         try {
             const response = await fetch('/api/musica/');
             const data = await response.json();
@@ -131,7 +148,7 @@
                 nomeDaMusica = await response.text();
             } catch (e) { }
         }
-            
+
         if (isPlaying) {
             const finalNode = normalizeRadioText(nomeDaMusica);
             if (finalNode && finalNode.length > 3) {
