@@ -399,45 +399,67 @@
         color: rgba(255, 255, 255, 0.80);
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 768px) {
+        /* ── Cabeçalho ── */
+        .hero-top {
+            padding: 12px 20px 0;
+        }
+
+        /* ── Corpo principal: empilha tudo verticalmente e centraliza ── */
         .hero-body {
-            padding: 32px 24px;
-            flex-direction: column;
+            padding: 20px 20px 32px;
         }
 
         .hero-content-wrapper {
             flex-direction: column;
-            gap: 40px;
+            align-items: center;
+            gap: 32px;
+            width: 100%;
+            text-align: center;
         }
 
-        .player-section {
-            border-right: none;
+        /* ── Coluna esquerda: título "Central FM" ── */
+        .player-left {
+            flex: none;
+            width: 100%;
             padding-right: 0;
+            display: flex;
+            flex-direction: column;
             align-items: center;
             text-align: center;
-            padding: 32px 24px;
         }
 
         .player-title {
-            font-size: 38px;
+            font-size: 52px;
+            letter-spacing: -2px;
+            white-space: normal;
         }
 
-        .player-right {
-            padding-left: 0;
+        .player-freq {
+            font-size: 18px;
         }
 
-        .prox-wrap {
-            align-self: center;
+        /* ── Coluna central: play + controles ── */
+        .player-center {
+            flex: none;
+            padding: 0;
+            width: 100%;
+            align-items: center;
         }
 
         .play-btn-large {
-            width: 86px;
-            height: 86px;
+            width: 90px;
+            height: 90px;
         }
 
         .play-btn-large svg {
-            width: 34px !important;
-            height: 34px !important;
+            width: 36px !important;
+            height: 36px !important;
+        }
+
+        .player-controls {
+            gap: 32px;
+            justify-content: center;
         }
 
         .ctrl-btn svg {
@@ -445,13 +467,41 @@
             height: 28px;
         }
 
-        .player-controls {
-            gap: 28px;
+        .volume-box {
+            justify-content: center;
         }
 
         .vol-track {
-            width: 200px;
+            width: 180px;
             height: 6px;
+        }
+
+        /* ── Coluna direita: locutor + próximo programa ── */
+        .player-right {
+            flex: none;
+            padding-left: 0;
+            width: 100%;
+            align-items: center;
+        }
+
+        .locutor-section {
+            padding-left: 0;
+            width: 100%;
+            align-items: center;
+        }
+
+        .loc-info-top {
+            justify-content: center;
+        }
+
+        .loc-prog-name {
+            font-size: 20px;
+        }
+
+        .prox-wrap {
+            align-self: center;
+            width: 100%;
+            max-width: 320px;
         }
     }
 </style>
