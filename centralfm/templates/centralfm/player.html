@@ -11,37 +11,8 @@
 
     let isPlaying = false;
 
-    // ── CONTROLE DE VOLUME ─────────────────────────────────────────────────
-    // iOS Safari bloqueia audio.volume por design (sempre retorna 1.0).
-    // Solução: Web Audio API com GainNode — o iOS permite controle de gain
-    // por software, que efetivamente muda o volume do áudio antes de chegar
-    // ao hardware. Funciona em todos os navegadores modernos.
     const INITIAL_VOLUME = 0.8;
-    let currentVolume = INITIAL_VOLUME;
-    let audioCtx = null;
-    let gainNode = null;
-
-    // Inicializa o Web Audio API (DEVE ser chamado dentro de um evento de
-    // interação do usuário — exigência do iOS/Safari para autoplay policy)
-    function initAudioContext() {
-        if (audioCtx) {
-            // Resume o contexto se estiver suspenso (acontece no iOS após inatividade)
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            return;
-        }
-        try {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const source = audioCtx.createMediaElementSource(audio);
-            gainNode = audioCtx.createGain();
-            gainNode.gain.value = currentVolume;
-            source.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-        } catch(e) {
-            console.warn('Web Audio API indisponível:', e);
-        }
-    }
-
-    // Inicializa a barra visual no carregamento
+    audio.volume = INITIAL_VOLUME;
     if (volFill) volFill.style.width = (INITIAL_VOLUME * 100) + '%';
 
     function setAllStatus(text) {
@@ -51,15 +22,12 @@
     function togglePlay() {
         if (!audio) return;
 
-        // Inicializa o Web Audio API na 1ª interação (obrigatório no iOS)
-        initAudioContext();
-
         if (isPlaying) {
             audio.pause();
             isPlaying = false;
             updateUI(false);
         } else {
-            setAllStatus("Conectado");
+            setAllStatus("Conectando...");
             audio.load();
             const playPromise = audio.play();
 
@@ -88,49 +56,30 @@
         }
     }
 
-    // Aplica o volume via GainNode (iOS) e audio.volume (desktop/Android)
-    function applyVolume(vol) {
-        currentVolume = Math.max(0, Math.min(1, vol));
-
-        // GainNode: funciona no iOS (Web Audio API não é bloqueada pela Apple)
-        if (gainNode) gainNode.gain.value = currentVolume;
-
-        // audio.volume: funciona no desktop e Android (ignorado no iOS)
-        try { audio.volume = currentVolume; } catch(e) {}
-
-        if (volFill) volFill.style.width = (currentVolume * 100) + '%';
-    }
-
-    // Barra de volume clicável (desktop)
     const volTrack = document.querySelector('.vol-track');
     if (volTrack && volFill) {
-        // Suporte a clique (desktop/Android)
         volTrack.addEventListener('click', (e) => {
             const rect = volTrack.getBoundingClientRect();
             const x = e.clientX - rect.left;
-            applyVolume(x / rect.width);
+            const width = rect.width;
+            const vol = Math.max(0, Math.min(1, x / width));
+            audio.volume = vol;
+            volFill.style.width = (vol * 100) + '%';
         });
-
-        // Suporte a toque (iOS/mobile) — usa changedTouches para obter posição
-        volTrack.addEventListener('touchend', (e) => {
-            e.preventDefault(); // Evita que o 'click' dispare em seguida
-            const rect = volTrack.getBoundingClientRect();
-            const x = e.changedTouches[0].clientX - rect.left;
-            applyVolume(x / rect.width);
-        }, { passive: false });
     }
 
-    // Botões + e -: usa currentVolume (nunca audio.volume) para evitar o bug do iOS
     function changeVolume(delta) {
         if (!audio) return;
-        applyVolume(currentVolume + delta);
+        const newVol = Math.max(0, Math.min(1, audio.volume + delta));
+        audio.volume = newVol;
+        if (volFill) volFill.style.width = (newVol * 100) + '%';
     }
 
     function normalizeRadioText(text) {
         if (!text) return "";
-
+        
         const mapa = {
-            '~a': 'ã', '~o': 'õ', '~e': 'ê', '~c': 'ç', '~n': 'ñ',
+            '~a': 'ã', '~o': 'õ', '~e': 'ê', '~c': 'ç', '~n': 'ñ', 
             '~A': 'Ã', '~O': 'Õ', '~E': 'Ê', '~C': 'Ç', '~N': 'Ñ',
             '´a': 'á', '´e': 'é', '´i': 'í', '´o': 'ó', '´u': 'ú',
             '´A': 'Á', '´E': 'É', '´I': 'Í', '´O': 'Ó', '´U': 'Ú',
@@ -164,9 +113,9 @@
 
     async function updateMetadata() {
         if (!isPlaying) return;
-
+        
         let nomeDaMusica = "";
-
+        
         try {
             const response = await fetch('/api/musica/');
             const data = await response.json();
@@ -182,7 +131,7 @@
                 nomeDaMusica = await response.text();
             } catch (e) { }
         }
-
+            
         if (isPlaying) {
             const finalNode = normalizeRadioText(nomeDaMusica);
             if (finalNode && finalNode.length > 3) {
