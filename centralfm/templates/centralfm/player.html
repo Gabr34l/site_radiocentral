@@ -11,12 +11,37 @@
 
     let isPlaying = false;
 
-    // iOS Safari ignora audio.volume (é somente leitura no iOS).
-    // Por isso rastreamos o volume na nossa própria variável,
-    // nunca lendo de volta audio.volume como fonte da verdade.
+    // ── CONTROLE DE VOLUME ─────────────────────────────────────────────────
+    // iOS Safari bloqueia audio.volume por design (sempre retorna 1.0).
+    // Solução: Web Audio API com GainNode — o iOS permite controle de gain
+    // por software, que efetivamente muda o volume do áudio antes de chegar
+    // ao hardware. Funciona em todos os navegadores modernos.
     const INITIAL_VOLUME = 0.8;
     let currentVolume = INITIAL_VOLUME;
-    try { audio.volume = INITIAL_VOLUME; } catch(e) {}
+    let audioCtx = null;
+    let gainNode = null;
+
+    // Inicializa o Web Audio API (DEVE ser chamado dentro de um evento de
+    // interação do usuário — exigência do iOS/Safari para autoplay policy)
+    function initAudioContext() {
+        if (audioCtx) {
+            // Resume o contexto se estiver suspenso (acontece no iOS após inatividade)
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            return;
+        }
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const source = audioCtx.createMediaElementSource(audio);
+            gainNode = audioCtx.createGain();
+            gainNode.gain.value = currentVolume;
+            source.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+        } catch(e) {
+            console.warn('Web Audio API indisponível:', e);
+        }
+    }
+
+    // Inicializa a barra visual no carregamento
     if (volFill) volFill.style.width = (INITIAL_VOLUME * 100) + '%';
 
     function setAllStatus(text) {
@@ -25,6 +50,9 @@
 
     function togglePlay() {
         if (!audio) return;
+
+        // Inicializa o Web Audio API na 1ª interação (obrigatório no iOS)
+        initAudioContext();
 
         if (isPlaying) {
             audio.pause();
@@ -60,10 +88,16 @@
         }
     }
 
-    // Função auxiliar para aplicar o volume na barra e no áudio
+    // Aplica o volume via GainNode (iOS) e audio.volume (desktop/Android)
     function applyVolume(vol) {
         currentVolume = Math.max(0, Math.min(1, vol));
-        try { audio.volume = currentVolume; } catch(e) {} // Ignorado no iOS
+
+        // GainNode: funciona no iOS (Web Audio API não é bloqueada pela Apple)
+        if (gainNode) gainNode.gain.value = currentVolume;
+
+        // audio.volume: funciona no desktop e Android (ignorado no iOS)
+        try { audio.volume = currentVolume; } catch(e) {}
+
         if (volFill) volFill.style.width = (currentVolume * 100) + '%';
     }
 
