@@ -235,18 +235,42 @@
 <script>
     const carouselBar = document.getElementById('promoCarousel');
     if (carouselBar) {
+        // Clone all cards and append to create seamless infinite loop
+        const originalCards = Array.from(carouselBar.querySelectorAll('.carousel-card'));
+        originalCards.forEach(card => {
+            const clone = card.cloneNode(true);
+            clone.setAttribute('aria-hidden', 'true');
+            carouselBar.appendChild(clone);
+        });
+
+        const cardWidth = () => {
+            const first = carouselBar.querySelector('.carousel-card');
+            return first ? first.offsetWidth + 14 : 0;
+        };
+
+        const totalOriginalWidth = () => cardWidth() * originalCards.length;
+
+        let isScrolling = false;
+
         setInterval(() => {
             if (window.innerWidth <= 640) return;
+            if (isScrolling) return;
 
-            const firstCard = carouselBar.querySelector('.carousel-card');
-            if (firstCard) {
-                const cardWidth = firstCard.offsetWidth + 14; // width + gap
-                carouselBar.scrollBy({ left: cardWidth, behavior: 'smooth' });
+            const step = cardWidth();
+            if (!step) return;
 
-                if (carouselBar.scrollLeft >= carouselBar.scrollWidth - carouselBar.clientWidth - 10) {
-                    carouselBar.scrollTo({ left: 0, behavior: 'smooth' });
+            isScrolling = true;
+            carouselBar.scrollBy({ left: step, behavior: 'smooth' });
+
+            setTimeout(() => {
+                // If we've scrolled into the cloned section, silently jump back
+                if (carouselBar.scrollLeft >= totalOriginalWidth() - 2) {
+                    carouselBar.style.scrollBehavior = 'auto';
+                    carouselBar.scrollLeft -= totalOriginalWidth();
+                    carouselBar.style.scrollBehavior = '';
                 }
-            }
+                isScrolling = false;
+            }, 700);
         }, 3500);
     }
 </script>
