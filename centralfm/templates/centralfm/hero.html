@@ -181,14 +181,32 @@
     }
 
     @media (max-width: 768px) {
-        .hero-app-btn-labels {
-            display: none;
+        .hero-top {
+            flex-direction: column;
+            gap: 16px;
         }
-
-        .hero-app-btn {
-            width: 36px;
-            padding: 0;
+        .hero-logo-box {
+            width: 72px;
+            height: 72px;
+        }
+        .hero-top-right {
+            flex-wrap: wrap;
             justify-content: center;
+            gap: 10px;
+        }
+        .hero-app-btn {
+            padding: 0 10px;
+            height: 34px;
+        }
+        .hero-app-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+        .hero-app-btn-labels small {
+            font-size: 7px;
+        }
+        .hero-app-btn-labels strong {
+            font-size: 11px;
         }
     }
 
