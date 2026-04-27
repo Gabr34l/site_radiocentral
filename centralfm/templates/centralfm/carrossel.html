@@ -164,17 +164,13 @@
         }
 
         .carousel-track {
-            flex-direction: column;
-            /* Empilha os cartões verticalmente */
-            overflow: visible;
-            /* Remove a barra de rolagem */
+            /* Mantém o flex-direction: row e overflow-x: auto originais */
         }
 
         .carousel-card {
-            width: 100%;
-            min-width: 100%;
+            width: auto;
+            min-width: calc(85% - 12px);
             height: 125px;
-            /* Ligeiramente mais alto no celular para boa leitura */
         }
 
         .static-container {
@@ -242,7 +238,6 @@
         let isScrolling = false;
 
         setInterval(() => {
-            if (window.innerWidth <= 640) return;
             if (isScrolling) return;
 
             const step = cardWidth();
