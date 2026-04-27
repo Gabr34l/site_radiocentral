@@ -18,20 +18,7 @@
     .carousel-container {
         flex: 1;
         overflow: hidden;
-        border-radius: 16px;
         position: relative;
-    }
-
-    .carousel-container::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        height: 100%;
-        width: 50px;
-        background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.4));
-        pointer-events: none;
-        z-index: 5;
     }
 
     .carousel-track {
@@ -39,6 +26,7 @@
         gap: 14px;
         overflow-x: auto;
         scroll-behavior: smooth;
+        scroll-snap-type: x mandatory;
 
         -ms-overflow-style: none;
         scrollbar-width: none;
@@ -55,6 +43,7 @@
 
     .carousel-card {
         min-width: calc(25% - 10.5px);
+        scroll-snap-align: start;
         height: 110px;
         border-radius: 16px;
         padding: 16px;
