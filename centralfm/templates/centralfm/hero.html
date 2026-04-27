@@ -106,6 +106,92 @@
         fill: #fff;
     }
 
+    .hero-top-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .hero-app-btns {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .hero-app-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 12px;
+        height: 36px;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
+        white-space: nowrap;
+    }
+
+    .hero-app-btn::after {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        border-radius: 11px;
+        box-shadow: 0 0 8px 1px rgba(250, 204, 21, 0.55);
+        opacity: 0.7;
+        transition: opacity 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hero-app-btn:hover::after {
+        opacity: 1;
+        box-shadow: 0 0 14px 3px rgba(250, 204, 21, 0.9);
+    }
+
+    .hero-app-btn:hover {
+        border-color: rgba(250, 204, 21, 0.6);
+        transform: translateY(-1px);
+    }
+
+    .hero-app-btn svg {
+        width: 16px;
+        height: 16px;
+        fill: rgba(255, 255, 255, 0.75);
+        flex-shrink: 0;
+    }
+
+    .hero-app-btn-labels {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
+
+    .hero-app-btn-labels small {
+        font-size: 8px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.5);
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+    }
+
+    .hero-app-btn-labels strong {
+        font-size: 12px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    @media (max-width: 768px) {
+        .hero-app-btn-labels {
+            display: none;
+        }
+
+        .hero-app-btn {
+            width: 36px;
+            padding: 0;
+            justify-content: center;
+        }
+    }
+
     .hero-body {
         flex: 1;
         display: flex;
@@ -511,22 +597,46 @@
         <div class="hero-logo-box">
             <img src="{% load static %}{% static 'Logo/logo.png' %}" alt="Logo">
         </div>
-        <div class="hero-socials">
-            <a href="https://www.instagram.com/radiocentral" class="social-btn" target="_blank"><svg
-                    viewBox="0 0 24 24">
-                    <path
-                        d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm3.98-10.169a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z" />
-                </svg></a>
-            <a href="https://www.facebook.com/Central101FM/" class="social-btn" target="_blank"><svg
-                    viewBox="0 0 24 24">
-                    <path
-                        d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z" />
-                </svg></a>
-            <a href="https://www.youtube.com/@centralfm1019" class="social-btn" target="_blank"><svg
-                    viewBox="0 0 24 24">
-                    <path
-                        d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.872.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                </svg></a>
+        <div class="hero-top-right">
+            <div class="hero-app-btns">
+                <a href="https://play.google.com/store/apps/details?id=br.com.radiocentralmontealegre.centralfm&hl=pt"
+                    target="_blank" rel="noopener noreferrer" class="hero-app-btn" id="header-btn-play-store">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3.18 23.76c.3.17.64.24.99.2l13.5-11.68-2.76-2.76L3.18 23.76zm16.44-13.2L16.8 8.8l-2.94 2.52 2.94 2.94 2.82-1.62c.8-.46.8-1.62.0-2.08zM2.1.48C1.8.78 1.62 1.26 1.62 1.9v20.2c0 .64.18 1.12.48 1.42l.08.08L13.32 12.5v-.28L2.1.48zm9.78 9.78L3.18.24c.3-.04.64.02.94.2l13.5 11.68-2.76 2.76-3-3.62z"/>
+                    </svg>
+                    <div class="hero-app-btn-labels">
+                        <small>Disponível no</small>
+                        <strong>Google Play</strong>
+                    </div>
+                </a>
+                <a href="https://apps.apple.com/br/app/central-fm-monte-alegre/id6450435398"
+                    target="_blank" rel="noopener noreferrer" class="hero-app-btn" id="header-btn-app-store">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                    </svg>
+                    <div class="hero-app-btn-labels">
+                        <small>Disponível na</small>
+                        <strong>App Store</strong>
+                    </div>
+                </a>
+            </div>
+            <div class="hero-socials">
+                <a href="https://www.instagram.com/radiocentral" class="social-btn" target="_blank"><svg
+                        viewBox="0 0 24 24">
+                        <path
+                            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm3.98-10.169a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z" />
+                    </svg></a>
+                <a href="https://www.facebook.com/Central101FM/" class="social-btn" target="_blank"><svg
+                        viewBox="0 0 24 24">
+                        <path
+                            d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z" />
+                    </svg></a>
+                <a href="https://www.youtube.com/@centralfm1019" class="social-btn" target="_blank"><svg
+                        viewBox="0 0 24 24">
+                        <path
+                            d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.872.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                    </svg></a>
+            </div>
         </div>
     </div>
 

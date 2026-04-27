@@ -27,7 +27,7 @@
             isPlaying = false;
             updateUI(false);
         } else {
-            setAllStatus("Conectando...");
+            setAllStatus("Conectado");
             audio.load();
             const playPromise = audio.play();
 
@@ -77,9 +77,9 @@
 
     function normalizeRadioText(text) {
         if (!text) return "";
-        
+
         const mapa = {
-            '~a': 'ã', '~o': 'õ', '~e': 'ê', '~c': 'ç', '~n': 'ñ', 
+            '~a': 'ã', '~o': 'õ', '~e': 'ê', '~c': 'ç', '~n': 'ñ',
             '~A': 'Ã', '~O': 'Õ', '~E': 'Ê', '~C': 'Ç', '~N': 'Ñ',
             '´a': 'á', '´e': 'é', '´i': 'í', '´o': 'ó', '´u': 'ú',
             '´A': 'Á', '´E': 'É', '´I': 'Í', '´O': 'Ó', '´U': 'Ú',
@@ -113,9 +113,9 @@
 
     async function updateMetadata() {
         if (!isPlaying) return;
-        
+
         let nomeDaMusica = "";
-        
+
         try {
             const response = await fetch('/api/musica/');
             const data = await response.json();
@@ -131,7 +131,7 @@
                 nomeDaMusica = await response.text();
             } catch (e) { }
         }
-            
+
         if (isPlaying) {
             const finalNode = normalizeRadioText(nomeDaMusica);
             if (finalNode && finalNode.length > 3) {
