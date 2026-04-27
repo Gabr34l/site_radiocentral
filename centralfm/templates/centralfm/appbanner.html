@@ -1,0 +1,201 @@
+{% load static %}
+<style>
+    .app-banner {
+        background: linear-gradient(135deg, #0a5a22 0%, #0e6e2a 60%, #1a8c38 100%);
+        padding: 48px 32px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .app-banner::before {
+        content: '';
+        position: absolute;
+        top: -60px;
+        right: -60px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(250, 204, 21, 0.12) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .app-banner::after {
+        content: '';
+        position: absolute;
+        bottom: -80px;
+        left: -40px;
+        width: 250px;
+        height: 250px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .app-banner-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 32px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .app-banner-text {
+        flex: 1;
+    }
+
+    .app-banner-eyebrow {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #facc15;
+        margin-bottom: 8px;
+    }
+
+    .app-banner-title {
+        font-size: 28px;
+        font-weight: 800;
+        color: #ffffff;
+        line-height: 1.2;
+        margin-bottom: 10px;
+    }
+
+    .app-banner-title span {
+        color: #facc15;
+    }
+
+    .app-banner-subtitle {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.65);
+        line-height: 1.6;
+        max-width: 420px;
+    }
+
+    .app-banner-buttons {
+        display: flex;
+        gap: 14px;
+        flex-shrink: 0;
+        align-items: center;
+    }
+
+    .app-store-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #ffffff;
+        color: #0a3d1a;
+        text-decoration: none;
+        padding: 12px 22px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 13px;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+        white-space: nowrap;
+    }
+
+    .app-store-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+    }
+
+    .app-store-btn.play {
+        background: #facc15;
+        color: #0a3d1a;
+    }
+
+    .app-store-btn svg {
+        width: 22px;
+        height: 22px;
+        flex-shrink: 0;
+    }
+
+    .app-store-btn-labels {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
+
+    .app-store-btn-labels small {
+        font-size: 9px;
+        font-weight: 500;
+        opacity: 0.7;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .app-store-btn-labels strong {
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    @media (max-width: 768px) {
+        .app-banner {
+            padding: 36px 20px;
+        }
+
+        .app-banner-inner {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .app-banner-subtitle {
+            max-width: 100%;
+        }
+
+        .app-banner-buttons {
+            justify-content: center;
+        }
+
+        .app-banner-title {
+            font-size: 22px;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .app-banner-buttons {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .app-store-btn {
+            justify-content: center;
+            width: 100%;
+        }
+    }
+</style>
+
+<section class="app-banner">
+    <div class="app-banner-inner">
+        <div class="app-banner-text">
+            <p class="app-banner-eyebrow">📱 Disponível agora</p>
+            <h2 class="app-banner-title">Baixe o App da<br><span>Central FM!</span></h2>
+            <p class="app-banner-subtitle">Ouça a Central FM de qualquer lugar, a qualquer hora. Disponível para Android e iPhone, de graça!</p>
+        </div>
+
+        <div class="app-banner-buttons">
+            <a href="https://play.google.com/store/apps/details?id=br.com.radiocentralmontealegre.centralfm&hl=pt"
+                target="_blank" rel="noopener noreferrer" class="app-store-btn play" id="btn-play-store">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3.18 23.76c.3.17.64.24.99.2l13.5-11.68-2.76-2.76L3.18 23.76zm16.44-13.2L16.8 8.8l-2.94 2.52 2.94 2.94 2.82-1.62c.8-.46.8-1.62.0-2.08zM2.1.48C1.8.78 1.62 1.26 1.62 1.9v20.2c0 .64.18 1.12.48 1.42l.08.08L13.32 12.5v-.28L2.1.48zm9.78 9.78L3.18.24c.3-.04.64.02.94.2l13.5 11.68-2.76 2.76-3-3.62z"/>
+                </svg>
+                <div class="app-store-btn-labels">
+                    <small>Disponível no</small>
+                    <strong>Google Play</strong>
+                </div>
+            </a>
+
+            <a href="https://apps.apple.com/br/app/central-fm-monte-alegre/id6450435398"
+                target="_blank" rel="noopener noreferrer" class="app-store-btn" id="btn-app-store">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                </svg>
+                <div class="app-store-btn-labels">
+                    <small>Disponível na</small>
+                    <strong>App Store</strong>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
