@@ -1,4 +1,4 @@
-<audio id="mainAudio" preload="auto">
+<audio id="mainAudio" preload="auto" crossorigin="anonymous">
     <source src="https://8036.brasilstream.com.br/stream" type="audio/mpeg">
 </audio>
 
@@ -10,10 +10,38 @@
     const volFill = document.getElementById('volFill');
 
     let isPlaying = false;
+    let audioCtx = null;
+    let gainNode = null;
+    let currentVolume = 0.6;
 
-    const INITIAL_VOLUME = 0.8;
-    audio.volume = INITIAL_VOLUME;
-    if (volFill) volFill.style.width = (INITIAL_VOLUME * 100) + '%';
+    audio.volume = currentVolume;
+    if (volFill) volFill.style.width = (currentVolume * 100) + '%';
+
+    function initWebAudio() {
+        try {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext || audioCtx) return;
+            
+            audioCtx = new AudioContext();
+            const source = audioCtx.createMediaElementSource(audio);
+            gainNode = audioCtx.createGain();
+            gainNode.gain.value = currentVolume;
+            
+            source.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+        } catch (e) {
+            console.warn("Web Audio API indisponível:", e);
+        }
+    }
+
+    function setVolume(vol) {
+        currentVolume = Math.max(0, Math.min(1, vol));
+        audio.volume = currentVolume;
+        if (gainNode && audioCtx) {
+            gainNode.gain.setTargetAtTime(currentVolume, audioCtx.currentTime, 0.05);
+        }
+        if (volFill) volFill.style.width = (currentVolume * 100) + '%';
+    }
 
     function setAllStatus(text) {
         statusTexts.forEach(el => el.innerText = text);
@@ -27,6 +55,9 @@
             isPlaying = false;
             updateUI(false);
         } else {
+            if (!audioCtx) initWebAudio();
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+
             setAllStatus("Conectado");
             audio.load();
             const playPromise = audio.play();
@@ -62,17 +93,13 @@
             const rect = volTrack.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const width = rect.width;
-            const vol = Math.max(0, Math.min(1, x / width));
-            audio.volume = vol;
-            volFill.style.width = (vol * 100) + '%';
+            setVolume(x / width);
         });
     }
 
     function changeVolume(delta) {
         if (!audio) return;
-        const newVol = Math.max(0, Math.min(1, audio.volume + delta));
-        audio.volume = newVol;
-        if (volFill) volFill.style.width = (newVol * 100) + '%';
+        setVolume(currentVolume + delta);
     }
 
     function normalizeRadioText(text) {

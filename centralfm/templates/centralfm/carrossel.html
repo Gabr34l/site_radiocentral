@@ -3,13 +3,13 @@
     .bottom-section {
         background: #fff;
         border-top: 1px solid #e8e8e8;
-        padding: 18px 32px;
+        padding: 18px 48px;
     }
 
     .bottom-section-wrapper {
-        max-width: 1200px;
-        margin: 0 auto;
+        max-width: 1600px;
         width: 100%;
+        margin: 0 auto;
         display: flex;
         gap: 14px;
         align-items: stretch;
@@ -38,7 +38,7 @@
 
     .static-container {
         flex-shrink: 0;
-        width: 20%;
+        width: 280px;
     }
 
     .carousel-card {
@@ -144,6 +144,12 @@
         }
     }
 
+    @media (min-width: 1400px) {
+        .carousel-card {
+            min-width: calc(20% - 11.2px);
+        }
+    }
+
     @media (max-width: 800px) {
         .bottom-section-wrapper {
             flex-direction: column;
@@ -151,6 +157,21 @@
 
         .static-container {
             width: 100%;
+        }
+
+        .carousel-track {
+            flex-direction: column;
+            overflow-y: auto;
+            overflow-x: hidden;
+            height: 264px;
+            scroll-snap-type: y mandatory;
+        }
+
+        .carousel-card {
+            width: 100%;
+            min-width: 100%;
+            min-height: 125px;
+            height: 125px;
         }
     }
 
@@ -161,20 +182,6 @@
 
         .bottom-section-wrapper {
             gap: 14px;
-        }
-
-        .carousel-track {
-            /* Mantém o flex-direction: row e overflow-x: auto originais */
-        }
-
-        .carousel-card {
-            width: auto;
-            min-width: calc(85% - 12px);
-            height: 125px;
-        }
-
-        .static-container {
-            width: 100%;
         }
     }
 </style>
@@ -228,30 +235,45 @@
             carouselBar.appendChild(clone);
         });
 
-        const cardWidth = () => {
+        const isVertical = () => window.innerWidth <= 800;
+
+        const cardStep = () => {
             const first = carouselBar.querySelector('.carousel-card');
-            return first ? first.offsetWidth + 14 : 0;
+            return first ? (isVertical() ? first.offsetHeight + 14 : first.offsetWidth + 14) : 0;
         };
 
-        const totalOriginalWidth = () => cardWidth() * originalCards.length;
+        const totalOriginalSize = () => cardStep() * originalCards.length;
 
         let isScrolling = false;
 
         setInterval(() => {
             if (isScrolling) return;
 
-            const step = cardWidth();
+            const step = cardStep();
             if (!step) return;
 
             isScrolling = true;
-            carouselBar.scrollBy({ left: step, behavior: 'smooth' });
+            
+            if (isVertical()) {
+                carouselBar.scrollBy({ top: step, behavior: 'smooth' });
+            } else {
+                carouselBar.scrollBy({ left: step, behavior: 'smooth' });
+            }
 
             setTimeout(() => {
                 // If we've scrolled into the cloned section, silently jump back
-                if (carouselBar.scrollLeft >= totalOriginalWidth() - 2) {
-                    carouselBar.style.scrollBehavior = 'auto';
-                    carouselBar.scrollLeft -= totalOriginalWidth();
-                    carouselBar.style.scrollBehavior = '';
+                if (isVertical()) {
+                    if (carouselBar.scrollTop >= totalOriginalSize() - 2) {
+                        carouselBar.style.scrollBehavior = 'auto';
+                        carouselBar.scrollTop -= totalOriginalSize();
+                        carouselBar.style.scrollBehavior = '';
+                    }
+                } else {
+                    if (carouselBar.scrollLeft >= totalOriginalSize() - 2) {
+                        carouselBar.style.scrollBehavior = 'auto';
+                        carouselBar.scrollLeft -= totalOriginalSize();
+                        carouselBar.style.scrollBehavior = '';
+                    }
                 }
                 isScrolling = false;
             }, 700);
