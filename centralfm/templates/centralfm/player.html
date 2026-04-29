@@ -59,7 +59,7 @@
             if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
 
             setAllStatus("Conectado");
-            audio.load();
+            // audio.load(); // Removido: o Safari/iOS quebra a Web Audio API (e o controle de volume) se o áudio for recarregado.
             const playPromise = audio.play();
 
             if (playPromise !== undefined) {
