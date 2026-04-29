@@ -169,7 +169,52 @@
         }
     }
 
+    async function updateProgramacao() {
+        try {
+            const response = await fetch('/api/programacao/');
+            if (!response.ok) return;
+            const data = await response.json();
+
+            // Atualiza informações do programa atual
+            const agoraNome = document.getElementById('agora-nome');
+            const agoraLocutor = document.getElementById('agora-locutor');
+            const agoraFotoContainer = document.getElementById('agora-foto-container');
+            
+            if (agoraNome) agoraNome.textContent = data.agora.nome;
+            if (agoraLocutor) agoraLocutor.textContent = "com " + data.agora.locutor_nome;
+            
+            if (agoraFotoContainer) {
+                if (data.agora.locutor_foto) {
+                    agoraFotoContainer.innerHTML = `<img src="${data.agora.locutor_foto}" alt="${data.agora.locutor_nome}" class="loc-photo" id="agora-foto-img">`;
+                } else {
+                    agoraFotoContainer.innerHTML = `<div class="loc-photo" id="agora-foto-fallback" style="background:#0d5c24; display:flex; align-items:center; justify-content:center; color:var(--accent); font-weight:800; font-size:42px;">C</div>`;
+                }
+            }
+
+            // Atualiza informações da próxima atração
+            const proxNome = document.getElementById('prox-nome');
+            const proxLocutor = document.getElementById('prox-locutor');
+            const proxFotoContainer = document.getElementById('prox-foto-container');
+            const proxHorario = document.getElementById('prox-horario');
+
+            if (proxNome) proxNome.textContent = data.proximo.nome;
+            if (proxLocutor) proxLocutor.textContent = "com " + data.proximo.locutor_nome;
+            if (proxHorario) proxHorario.textContent = data.proximo.horario;
+            
+            if (proxFotoContainer) {
+                if (data.proximo.locutor_foto) {
+                    proxFotoContainer.innerHTML = `<img src="${data.proximo.locutor_foto}" alt="${data.proximo.locutor_nome}" style="width:100%; height:100%; object-fit:cover;" id="prox-foto-img">`;
+                } else {
+                    proxFotoContainer.innerHTML = `<div id="prox-foto-fallback" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.35); font-weight:700; font-size:14px;">C</div>`;
+                }
+            }
+        } catch (e) {
+            console.warn("Erro ao atualizar programação", e);
+        }
+    }
+
     setInterval(updateMetadata, 50000);
+    setInterval(updateProgramacao, 60000); // Atualiza a grade de programação a cada 1 minuto
 
     let waitingTimer = null;
 

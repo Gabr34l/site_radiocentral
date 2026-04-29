@@ -12,7 +12,7 @@ import requests
 from django.shortcuts import render
 from django.http import JsonResponse
 
-from .models import Promocao, Ganhador
+from .models import Promocao, Ganhador, Programa
 from .utils import get_current_and_next_program, normalize_radio_text
 
 
@@ -72,3 +72,26 @@ def api_musica_agora(request):
     except Exception as e:
         # Fallback seguro: não quebra o site se a API da rádio estiver fora
         return JsonResponse({'musica': 'Sintonize 101.1 FM', 'erro': str(e)})
+
+
+def api_programacao(request):
+    """
+    Endpoint JSON: /api/programacao/
+    Retorna os dados do programa atual e do próximo para atualização automática via JS.
+    """
+    programa_agora, proximo_programa = get_current_and_next_program()
+    
+    agora_data = {
+        'nome': programa_agora.nome if programa_agora else '101 Mais Tocadas',
+        'locutor_nome': programa_agora.locutor.nome if programa_agora and programa_agora.locutor else 'Equipe Central',
+        'locutor_foto': programa_agora.locutor.foto.url if programa_agora and programa_agora.locutor and programa_agora.locutor.foto else '',
+    }
+    
+    proximo_data = {
+        'nome': proximo_programa.nome if proximo_programa else 'Programação Especial',
+        'locutor_nome': proximo_programa.locutor.nome if proximo_programa and proximo_programa.locutor else 'Equipe Central',
+        'locutor_foto': proximo_programa.locutor.foto.url if proximo_programa and proximo_programa.locutor and proximo_programa.locutor.foto else '',
+        'horario': f"{proximo_programa.horario_inicio.hour}h" if proximo_programa and proximo_programa.horario_inicio else '',
+    }
+    
+    return JsonResponse({'agora': agora_data, 'proximo': proximo_data})

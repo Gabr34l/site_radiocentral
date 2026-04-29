@@ -16,4 +16,7 @@ urlpatterns = [
 
     # Endpoint usado pelo JavaScript do player para buscar metadados da música atual
     path('api/musica/', views.api_musica_agora, name='api_musica_agora'),
+
+    # Endpoint usado para buscar e atualizar os dados do programa e locutor na tela (rotativo automático)
+    path('api/programacao/', views.api_programacao, name='api_programacao'),
 ]

@@ -12,6 +12,7 @@
         flex-direction: column;
         color: var(--text-primary);
         overflow: hidden;
+        min-height: 55vh;
     }
 
     .hero-container::before,
@@ -28,7 +29,8 @@
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
-        animation: waveSlide 10s ease-in-out infinite;
+        transform-origin: center center;
+        animation: audioPulse 6s ease-in-out infinite;
     }
 
     .hero-container::after {
@@ -36,20 +38,26 @@
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
-        animation: waveSlide 14s ease-in-out infinite reverse;
+        transform-origin: center center;
+        animation: audioPulse 4.5s ease-in-out infinite reverse;
     }
 
-    @keyframes waveSlide {
-        0% {
-            transform: scale(1.1) translateX(-1%) scaleY(1);
+    @keyframes audioPulse {
+        0%, 100% {
+            transform: scale(1.1) translateY(0) scaleY(1);
+            opacity: 0.8;
         }
-
+        25% {
+            transform: scale(1.1) translateY(-1%) scaleY(1.15);
+            opacity: 1;
+        }
         50% {
-            transform: scale(1.1) translateX(1%) scaleY(1.04);
+            transform: scale(1.1) translateY(1%) scaleY(0.95);
+            opacity: 0.9;
         }
-
-        100% {
-            transform: scale(1.1) translateX(-1%) scaleY(1);
+        75% {
+            transform: scale(1.1) translateY(-0.5%) scaleY(1.25);
+            opacity: 1;
         }
     }
 
@@ -62,13 +70,21 @@
     .hero-top {
         padding: 10px 48px 0;
         display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .hero-top-wrapper {
+        display: flex;
         justify-content: space-between;
         align-items: center;
+        width: 100%;
+        padding: 0 2vw;
     }
 
     .hero-logo-box {
-        width: 48px;
-        height: 48px;
+        width: 75px;
+        height: 75px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -180,14 +196,19 @@
         color: rgba(255, 255, 255, 0.9);
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1150px) {
         .hero-top {
+            padding: 12px 20px 0;
+        }
+        .hero-top-wrapper {
             flex-direction: column;
+            justify-content: center;
             gap: 16px;
         }
         .hero-logo-box {
-            width: 72px;
-            height: 72px;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 4px;
         }
         .hero-top-right {
             flex-wrap: wrap;
@@ -219,11 +240,11 @@
     }
 
     .hero-content-wrapper {
-        max-width: 1600px;
         width: 100%;
         margin: 0 auto;
         display: flex;
         align-items: center;
+        padding: 0 2vw;
     }
 
     .player-left {
@@ -458,17 +479,18 @@
     .prox-wrap {
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 18px;
         background: rgba(0, 0, 0, 0.35);
         border: 1.5px solid rgba(250, 204, 21, 0.35);
         border-radius: 16px;
-        padding: 16px 24px;
-        min-width: 320px;
+        padding: 18px 26px;
+        width: 100%;
+        max-width: 440px;
     }
 
     .prox-photo {
-        width: 40px;
-        height: 40px;
+        width: 48px;
+        height: 48px;
         border-radius: 50%;
         background: rgba(0, 0, 0, 0.30);
         border: 2px solid #facc15;
@@ -483,27 +505,55 @@
     }
 
     .prox-label {
-        color: #facc15;
-        font-size: 10px;
-        font-weight: 700;
+        color: #ef4444;
+        font-size: 11px;
+        font-weight: 800;
         letter-spacing: 0.10em;
         text-transform: uppercase;
-        margin-bottom: 2px;
+        margin-bottom: 4px;
     }
 
     .prox-program {
-        font-size: 14px;
+        font-size: 18px;
         font-weight: 800;
         color: #fff;
         line-height: 1.2;
+        margin-bottom: 2px;
     }
 
     .prox-name {
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.80);
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.85);
+        font-weight: 500;
     }
 
-    @media (max-width: 768px) {
+    .prox-info {
+        flex: 1;
+        padding-right: 16px;
+    }
+
+    .prox-divider {
+        width: 1px;
+        height: 48px;
+        background: rgba(255,255,255,0.12);
+        margin-right: 20px;
+        border-radius: 1px;
+    }
+
+    .prox-time-badge {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, rgba(250, 204, 21, 0.15) 0%, rgba(250, 204, 21, 0.05) 100%);
+        border: 1px solid rgba(250, 204, 21, 0.3);
+        padding: 10px 18px;
+        border-radius: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        backdrop-filter: blur(4px);
+    }
+
+    @media (max-width: 1150px) {
         /* ── Cabeçalho ── */
         .hero-top {
             padding: 12px 20px 0;
@@ -605,17 +655,37 @@
         .prox-wrap {
             align-self: center;
             width: 100%;
-            max-width: 320px;
+            max-width: 400px;
+            padding: 14px 16px;
+            gap: 12px;
+        }
+
+        .prox-info {
+            text-align: left;
+            padding-right: 8px;
+        }
+
+        .prox-divider {
+            margin-right: 12px;
+        }
+
+        .prox-time-badge {
+            padding: 8px 12px;
+        }
+
+        .prox-program {
+            font-size: 16px;
         }
     }
 </style>
 
 <section class="hero-container" id="mainHero">
     <div class="hero-top">
-        <div class="hero-logo-box">
-            <img src="{% load static %}{% static 'Logo/logo.png' %}" alt="Logo">
-        </div>
-        <div class="hero-top-right">
+        <div class="hero-top-wrapper">
+            <div class="hero-logo-box">
+                <img src="{% load static %}{% static 'Logo/logo.png' %}" alt="Logo">
+            </div>
+            <div class="hero-top-right">
             <div class="hero-app-btns">
                 <a href="https://play.google.com/store/apps/details?id=br.com.radiocentralmontealegre.centralfm&hl=pt"
                     target="_blank" rel="noopener noreferrer" class="hero-app-btn" id="header-btn-play-store">
@@ -657,6 +727,7 @@
             </div>
         </div>
     </div>
+</div>
 
     <div class="hero-body">
         <div class="hero-content-wrapper">
@@ -702,12 +773,12 @@
             <div class="player-right">
                 <div class="loc-current"
                     style="padding-bottom: 20px; width: 100%; display: flex; flex-direction: column; align-items: center;">
-                    <div class="loc-photo-wrap">
+                    <div class="loc-photo-wrap" id="agora-foto-container">
                         {% if programa_agora.locutor.foto %}
                         <img src="{{ programa_agora.locutor.foto.url }}" alt="{{ programa_agora.locutor.nome }}"
-                            class="loc-photo">
+                            class="loc-photo" id="agora-foto-img">
                         {% else %}
-                        <div class="loc-photo"
+                        <div class="loc-photo" id="agora-foto-fallback"
                             style="background:#0d5c24; display:flex; align-items:center; justify-content:center; color:var(--accent); font-weight:800; font-size:42px;">
                             C</div>
                         {% endif %}
@@ -719,28 +790,35 @@
                             </div>
                             <span class="loc-time js-status-text">No Ar</span>
                         </div>
-                        <h3 class="loc-prog-name">{% if programa_agora %}{{ programa_agora.nome }}{% else %}101 Mais Tocadas{% endif %}</h3>
-                        <span class="loc-name">{% if programa_agora and programa_agora.locutor %}com {{ programa_agora.locutor.nome }}{% else %}com Equipe Central{% endif %}</span>
+                        <h3 class="loc-prog-name" id="agora-nome">{% if programa_agora %}{{ programa_agora.nome }}{% else %}101 Mais Tocadas{% endif %}</h3>
+                        <span class="loc-name" id="agora-locutor">{% if programa_agora and programa_agora.locutor %}com {{ programa_agora.locutor.nome }}{% else %}com Equipe Central{% endif %}</span>
                     </div>
                 </div>
 
                 <div style="width: 100%; height: 1px; background: rgba(255,255,255,0.10); margin-bottom: 20px;"></div>
 
                 <div class="prox-wrap">
-                    <div class="prox-photo">
+                    <div class="prox-photo" id="prox-foto-container">
                         {% if proximo_programa.locutor.foto %}
                         <img src="{{ proximo_programa.locutor.foto.url }}" alt="{{ proximo_programa.locutor.nome }}"
-                            style="width:100%; height:100%; object-fit:cover;">
+                            style="width:100%; height:100%; object-fit:cover;" id="prox-foto-img">
                         {% else %}
-                        <div
+                        <div id="prox-foto-fallback"
                             style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.35); font-weight:700; font-size:14px;">
                             C</div>
                         {% endif %}
                     </div>
                     <div class="prox-info">
                         <div class="prox-label">Próxima atração</div>
-                        <div class="prox-program">{% if proximo_programa %}{{ proximo_programa.nome }}{% else %}Programação Especial{% endif %}</div>
-                        <div class="prox-name">{% if proximo_programa and proximo_programa.locutor %}com {{ proximo_programa.locutor.nome }}{% else %}com Equipe Central{% endif %}</div>
+                        <div class="prox-program" id="prox-nome">{% if proximo_programa %}{{ proximo_programa.nome }}{% else %}Programação Especial{% endif %}</div>
+                        <div class="prox-name" id="prox-locutor">{% if proximo_programa and proximo_programa.locutor %}com {{ proximo_programa.locutor.nome }}{% else %}com Equipe Central{% endif %}</div>
+                    </div>
+                    <div class="prox-divider"></div>
+                    <div class="prox-time-badge">
+                        <span style="font-size: 9px; font-weight: 800; color: #facc15; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 4px; opacity: 0.9;">A partir das</span>
+                        <div class="prox-time" id="prox-horario" style="font-size: 24px; font-weight: 900; color: #ffffff; line-height: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.4); letter-spacing: -0.5px;">
+                            {% if proximo_programa and proximo_programa.horario_inicio %}{{ proximo_programa.horario_inicio.hour }}h{% endif %}
+                        </div>
                     </div>
                 </div>
             </div>

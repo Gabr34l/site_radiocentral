@@ -7,7 +7,6 @@
     }
 
     .bottom-section-wrapper {
-        max-width: 1600px;
         width: 100%;
         margin: 0 auto;
         display: flex;
@@ -42,7 +41,8 @@
     }
 
     .carousel-card {
-        min-width: calc(25% - 10.5px);
+        flex: 0 0 auto;
+        width: 320px;
         scroll-snap-align: start;
         height: 110px;
         border-radius: 16px;
@@ -135,18 +135,12 @@
 
     @media (max-width: 1024px) {
         .carousel-card {
-            min-width: calc(33.333% - 9.33px);
+            width: 280px;
             height: 100px;
         }
 
         .static-container {
             width: 30%;
-        }
-    }
-
-    @media (min-width: 1400px) {
-        .carousel-card {
-            min-width: calc(20% - 11.2px);
         }
     }
 
