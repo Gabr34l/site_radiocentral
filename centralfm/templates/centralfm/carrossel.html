@@ -43,7 +43,7 @@
     .carousel-card {
         flex: 0 0 auto;
         flex-shrink: 0;
-        width: 320px;
+        width: calc((100% - (4 * 14px)) / 5); /* Ajuste para 5 cartas caberem perfeitamente */
         scroll-snap-align: start;
         height: 110px;
         border-radius: 16px;
@@ -136,12 +136,12 @@
 
     @media (max-width: 1366px) and (min-width: 961px) {
         .carousel-card {
-            width: 240px;
-            height: 90px;
+            width: calc((100% - (2 * 14px)) / 3); /* Ajuste para 3 cartas caberem perfeitamente */
+            height: 100px;
         }
 
         .static-container {
-            width: 240px;
+            width: 280px;
         }
 
         .bottom-section {
