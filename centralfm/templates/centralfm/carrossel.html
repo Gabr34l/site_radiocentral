@@ -134,17 +134,6 @@
         color: #888;
     }
 
-    @media (max-width: 1440px) {
-        .carousel-card {
-            width: 280px;
-            height: 100px;
-        }
-
-        .static-container {
-            width: 280px;
-        }
-    }
-
     @media (max-width: 1280px) {
         .bottom-section {
             padding: 24px 20px;
@@ -163,7 +152,7 @@
             flex-direction: column;
             overflow-y: auto;
             overflow-x: hidden;
-            height: 300px; /* Aumentado para acomodar melhor no mobile */
+            height: 320px;
             scroll-snap-type: y mandatory;
         }
 
@@ -236,7 +225,7 @@
             carouselBar.appendChild(clone);
         });
 
-        const isVertical = () => window.innerWidth <= 800;
+        const isVertical = () => window.innerWidth <= 1280;
 
         const cardStep = () => {
             const first = carouselBar.querySelector('.carousel-card');
