@@ -134,7 +134,7 @@
         color: #888;
     }
 
-    @media (max-width: 1280px) {
+    @media (max-width: 960px) {
         .bottom-section {
             padding: 24px 20px;
         }
@@ -225,7 +225,7 @@
             carouselBar.appendChild(clone);
         });
 
-        const isVertical = () => window.innerWidth <= 1280;
+        const isVertical = () => window.innerWidth <= 960;
 
         const cardStep = () => {
             const first = carouselBar.querySelector('.carousel-card');
