@@ -42,6 +42,7 @@
 
     .carousel-card {
         flex: 0 0 auto;
+        flex-shrink: 0;
         width: 320px;
         scroll-snap-align: start;
         height: 110px;
@@ -133,20 +134,25 @@
         color: #888;
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width: 1440px) {
         .carousel-card {
             width: 280px;
             height: 100px;
         }
 
         .static-container {
-            width: 30%;
+            width: 280px;
         }
     }
 
-    @media (max-width: 800px) {
+    @media (max-width: 1280px) {
+        .bottom-section {
+            padding: 24px 20px;
+        }
+
         .bottom-section-wrapper {
             flex-direction: column;
+            gap: 20px;
         }
 
         .static-container {
@@ -157,15 +163,16 @@
             flex-direction: column;
             overflow-y: auto;
             overflow-x: hidden;
-            height: 264px;
+            height: 300px; /* Aumentado para acomodar melhor no mobile */
             scroll-snap-type: y mandatory;
         }
 
         .carousel-card {
             width: 100%;
             min-width: 100%;
-            min-height: 125px;
-            height: 125px;
+            min-height: 140px;
+            height: 140px;
+            flex-shrink: 0;
         }
     }
 
