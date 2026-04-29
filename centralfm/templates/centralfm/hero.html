@@ -511,6 +511,10 @@
         letter-spacing: 0.10em;
         text-transform: uppercase;
         margin-bottom: 4px;
+        text-shadow: 
+            0 0 2px rgba(239, 68, 68, 0.8),
+            0 0 6px rgba(239, 68, 68, 0.6),
+            0 0 12px rgba(239, 68, 68, 0.4);
     }
 
     .prox-program {
@@ -732,7 +736,10 @@
     <div class="hero-body">
         <div class="hero-content-wrapper">
             <div class="player-left">
-                <span class="player-label">No Ar Agora</span>
+                <span class="player-label" style="display: flex; align-items: center; gap: 8px;">
+                    No Ar Agora
+                    <div class="live-dot"></div>
+                </span>
                 <h1 class="player-title">Central FM</h1>
                 <p class="player-freq">Tá na Central,<br>Tá Legal!</p>
             </div>
