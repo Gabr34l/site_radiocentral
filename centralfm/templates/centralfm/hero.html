@@ -781,9 +781,10 @@
                 <div class="loc-current"
                     style="padding-bottom: 20px; width: 100%; display: flex; flex-direction: column; align-items: center;">
                     <div class="loc-photo-wrap" id="agora-foto-container">
-                        {% if programa_agora.locutor.foto %}
-                        <img src="{{ programa_agora.locutor.foto.url }}" alt="{{ programa_agora.locutor.nome }}"
-                            class="loc-photo" id="agora-foto-img">
+                        {% if programa_agora.locutor.media_url %}
+                        <img src="{{ programa_agora.locutor.media_url }}" alt="{{ programa_agora.locutor.nome }}"
+                            class="loc-photo" id="agora-foto-img"
+                            {% if programa_agora.locutor.tem_gif %}style="image-rendering: auto;"{% endif %}>
                         {% else %}
                         <div class="loc-photo" id="agora-foto-fallback"
                             style="background:#0d5c24; display:flex; align-items:center; justify-content:center; color:var(--accent); font-weight:800; font-size:42px;">
@@ -806,8 +807,8 @@
 
                 <div class="prox-wrap">
                     <div class="prox-photo" id="prox-foto-container">
-                        {% if proximo_programa.locutor.foto %}
-                        <img src="{{ proximo_programa.locutor.foto.url }}" alt="{{ proximo_programa.locutor.nome }}"
+                        {% if proximo_programa.locutor.media_url %}
+                        <img src="{{ proximo_programa.locutor.media_url }}" alt="{{ proximo_programa.locutor.nome }}"
                             style="width:100%; height:100%; object-fit:cover;" id="prox-foto-img">
                         {% else %}
                         <div id="prox-foto-fallback"

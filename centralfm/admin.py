@@ -12,14 +12,28 @@ from .models import Locutor, Promocao, Programa, Ganhador
 # Exibe os locutores cadastrados com um indicador visual (✓/✗) de foto.
 @admin.register(Locutor)
 class LocutorAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'tem_foto')
+    list_display = ('nome', 'tem_foto', 'tem_gif_animado')
     search_fields = ('nome',)
+
+    fieldsets = (
+        ('DADOS DO LOCUTOR', {'fields': ('nome',)}),
+        ('MÍDIA', {
+            'fields': ('foto', 'gif_animado'),
+            'description': 'O GIF animado, se preenchido, substitui a foto no site.'
+        }),
+    )
 
     def tem_foto(self, obj):
         """Retorna True/False para exibir ✓ ou ✗ na coluna 'Foto?' da listagem."""
         return bool(obj.foto)
     tem_foto.boolean = True
     tem_foto.short_description = 'Foto?'
+
+    def tem_gif_animado(self, obj):
+        """Retorna True/False para exibir ✓ ou ✗ na coluna 'GIF?' da listagem."""
+        return bool(obj.gif_animado)
+    tem_gif_animado.boolean = True
+    tem_gif_animado.short_description = 'GIF?'
 
 # ─── PROMOÇÃO ───────────────────────────────────────────────────────────────
 # Permite ativar/desativar promoções diretamente na listagem (list_editable)

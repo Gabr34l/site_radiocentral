@@ -8,6 +8,27 @@ class Locutor(models.Model):
     """
     nome = models.CharField('Nome do Locutor', max_length=100)
     foto = models.ImageField('Foto do Locutor', upload_to='locutores/', blank=True, null=True)
+    gif_animado = models.FileField(
+        'GIF Animado (opcional)',
+        upload_to='locutores/gifs/',
+        blank=True,
+        null=True,
+        help_text="Se preenchido, substitui a foto estática por um GIF animado. Use .gif ou .webp animado."
+    )
+
+    @property
+    def media_url(self):
+        """Retorna a URL do GIF se existir, caso contrário retorna a foto."""
+        if self.gif_animado:
+            return self.gif_animado.url
+        if self.foto:
+            return self.foto.url
+        return None
+
+    @property
+    def tem_gif(self):
+        """Indica se o locutor possui GIF animado."""
+        return bool(self.gif_animado)
 
     def __str__(self):
         return self.nome
