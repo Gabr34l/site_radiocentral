@@ -63,21 +63,30 @@
         padding: 6px 12px;
         border-radius: 12px;
         border-bottom-right-radius: 2px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         white-space: nowrap;
         animation: floatBadge 3s ease-in-out infinite;
     }
 
     @keyframes zapPing {
-        75%, 100% {
+
+        75%,
+        100% {
             transform: scale(1.6);
             opacity: 0;
         }
     }
 
     @keyframes floatBadge {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-5px); }
+
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-5px);
+        }
     }
 
     .whatsapp-float:hover {
@@ -98,6 +107,7 @@
     </div>
     <div class="footer-text" style="font-size: 9px; opacity: 0.5;">
         © 2026 RÁDIO CENTRAL — TODOS OS DIREITOS RESERVADOS
+        <br>Desenvolvido por Gabriel Santos<br>
     </div>
 </footer>
 
