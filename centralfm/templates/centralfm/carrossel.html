@@ -195,29 +195,23 @@
     <div class="bottom-section-wrapper">
         <div class="carousel-container">
             <div class="carousel-track" id="promoCarousel">
-                <a href="https://wa.me/5534996491118?text=Quero%20participar%20da%20Quinta%20da%20Pizza!"
-                    target="_blank" class="carousel-card"
-                    style="background-image: url('{% get_static_prefix %}Promocao/quinta_da_pizza.jpg');"></a>
-
-                <a href="https://wa.me/5534996491118?text=Quero%20participar%20do%20Aniversário%20Premiado!"
-                    target="_blank" class="carousel-card"
-                    style="background-image: url('{% get_static_prefix %}Promocao/aniversario_premiado.jpg');"></a>
-
-                <a href="https://wa.me/5534996491118?text=Quero%20participar%20da%20Grana%20Extra!" target="_blank"
+                {% for promocao in promocoes %}
+                <a href="{{ promocao.link_whatsapp|default:'#' }}"
+                    target="_blank"
                     class="carousel-card"
-                    style="background-image: url('{% get_static_prefix %}Promocao/grana_extra.jpg');"></a>
-
-                <a href="https://wa.me/5534996491118?text=Quero%20participar%20do%20Dinheiro%20na%20Mao!"
-                    target="_blank" class="carousel-card"
-                    style="background-image: url('{% get_static_prefix %}Promocao/dinheiro_na_mao.jpg');"></a>
-
-                <a href="https://wa.me/5534996491118?text=Quero%20participar%20da%20Placa%20Premiada!" target="_blank"
-                    class="carousel-card"
-                    style="background-image: url('{% get_static_prefix %}Promocao/placa_premiada.jpg');"></a>
-
-                <a href="https://wa.me/5534996491118?text=Quero%20participar%20da%20Resenha%20da%20Central!"
-                    target="_blank" class="carousel-card"
-                    style="background-image: url('{% get_static_prefix %}Promocao/resenha_da_central.jpg');"></a>
+                    title="{{ promocao.titulo }}"
+                    {% if promocao.imagem_banner %}
+                    style="background-image: url('{{ promocao.imagem_banner.url }}');"
+                    {% else %}
+                    style="background: linear-gradient(135deg, #0d5c24 0%, #1a8c38 100%);"
+                    {% endif %}
+                ></a>
+                {% empty %}
+                {# Fallback: nenhuma promoção ativa no banco de dados #}
+                <div class="carousel-card" style="background: linear-gradient(135deg, #0d5c24 0%, #1a8c38 100%); justify-content: center; color: #facc15; font-size: 13px; text-align: center; padding: 12px;">
+                    Nenhuma promoção ativa no momento.
+                </div>
+                {% endfor %}
             </div>
         </div>
 
