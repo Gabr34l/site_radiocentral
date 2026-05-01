@@ -163,11 +163,16 @@
             width: 100%;
         }
 
+        .carousel-container {
+            overflow: hidden; /* garante que nada vaze fora do container */
+        }
+
         .carousel-track {
             flex-direction: column;
             overflow-y: auto;
             overflow-x: hidden;
-            height: 320px;
+            /* 2 cards × 140px + 1 gap × 14px = exatamente sem cantinho */
+            height: calc(2 * 140px + 1 * 14px);
             scroll-snap-type: y mandatory;
         }
 
@@ -177,6 +182,7 @@
             min-height: 140px;
             height: 140px;
             flex-shrink: 0;
+            scroll-snap-align: start;
         }
     }
 
