@@ -1,4 +1,5 @@
 from django.db import models
+from urllib.parse import quote
 from django.templatetags.static import static
 
 class Locutor(models.Model):
@@ -24,12 +25,23 @@ class Promocao(models.Model):
     descricao = models.TextField('Descrição', blank=True, null=True)
     imagem_banner = models.ImageField('Banner da Promoção', upload_to='promocoes/', blank=True, null=True)
     link_whatsapp = models.URLField(
-        'Link de Redirecionamento (WhatsApp)', 
-        blank=True, null=True, 
-        help_text="Ex: https://wa.me/5534996491118?text=Quero+Participar"
+        'Link WhatsApp (opcional)',
+        blank=True, null=True,
+        help_text="Deixe em branco para gerar automaticamente a partir do título."
     )
     ativa = models.BooleanField('Promoção Ativa?', default=True)
     criada_em = models.DateTimeField('Criada em', auto_now_add=True)
+
+    NUMERO_WHATSAPP = '5534996491118'
+
+    @property
+    def whatsapp_url(self):
+        """Retorna o link do WhatsApp. Usa o campo manual se preenchido,
+        caso contrário gera automaticamente a partir do título."""
+        if self.link_whatsapp:
+            return self.link_whatsapp
+        mensagem = f'Quero participar da {self.titulo}'
+        return f'https://wa.me/{self.NUMERO_WHATSAPP}?text={quote(mensagem)}'
 
     def __str__(self):
         return self.titulo
