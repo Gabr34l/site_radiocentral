@@ -11,7 +11,7 @@ from centralfm.models import Locutor, Programa
 # Locutores
 loc_nomes = [
     "Danilo Vilela", "Chicão", "Alex Silva", "Renata Lima", 
-    "Cairo Santos", "Igreja Evangélica", "Padre Aldemir - Igreja Católica",
+    "Cairo Santos", "Igreja Evangélica", "Igreja Católica",
     "Centro Espírita", "Igreja Evangélica (Jovens)", "Canal Gov", "Equipe Central"
 ]
 
@@ -34,7 +34,8 @@ for dia in dias_uteis:
         {"nome": "Jornal da Central", "locutor": locutores["Alex Silva"], "dia": dia, "inicio": time(11,30), "fim": time(13,0)},
         {"nome": "Central Alegre", "locutor": locutores["Alex Silva"], "dia": dia, "inicio": time(13,0), "fim": time(16,0)},
         {"nome": "Alô Central", "locutor": locutores["Cairo Santos"], "dia": dia, "inicio": time(16,0), "fim": time(18,0)},
-        {"nome": "Noite 101", "locutor": locutores["Renata Lima"], "dia": dia, "inicio": time(18,0), "fim": time(21,0)},
+        {"nome": "Ave Maria", "locutor": locutores["Igreja Católica"], "dia": dia, "inicio": time(18,0), "fim": time(18,5)},
+        {"nome": "Noite 101", "locutor": locutores["Renata Lima"], "dia": dia, "inicio": time(18,5), "fim": time(21,0)},
         {"nome": "A Voz do Brasil", "locutor": locutores["Canal Gov"], "dia": dia, "inicio": time(21,0), "fim": time(22,0)},
         {"nome": "Madrugada 101", "locutor": locutores["Equipe Central"], "dia": dia, "inicio": time(22,0), "fim": time(23,59,59)},
     ])
@@ -55,7 +56,7 @@ Grade.extend([
 Grade.extend([
     {"nome": "101 Mais Tocadas", "locutor": locutores["Equipe Central"], "dia": 'domingo', "inicio": time(0,0), "fim": time(6,0)},
     {"nome": "Domingo Show", "locutor": locutores["Cairo Santos"], "dia": 'domingo', "inicio": time(6,0), "fim": time(9,0)},
-    {"nome": "Santa Missa", "locutor": locutores["Padre Aldemir - Igreja Católica"], "dia": 'domingo', "inicio": time(9,0), "fim": time(10,0)},
+    {"nome": "Santa Missa", "locutor": locutores["Igreja Católica"], "dia": 'domingo', "inicio": time(9,0), "fim": time(10,0)},
     {"nome": "Domingo Show", "locutor": locutores["Cairo Santos"], "dia": 'domingo', "inicio": time(10,0), "fim": time(12,0)},
     {"nome": "Ondas de Luz", "locutor": locutores["Centro Espírita"], "dia": 'domingo', "inicio": time(12,0), "fim": time(12,30)},
     {"nome": "Jovens Vencedores", "locutor": locutores["Igreja Evangélica (Jovens)"], "dia": 'domingo', "inicio": time(12,30), "fim": time(13,0)},
