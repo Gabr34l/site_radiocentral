@@ -21,12 +21,12 @@
         try {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             if (!AudioContext || audioCtx) return;
-            
+
             audioCtx = new AudioContext();
             const source = audioCtx.createMediaElementSource(audio);
             gainNode = audioCtx.createGain();
             gainNode.gain.value = currentVolume;
-            
+
             source.connect(gainNode);
             gainNode.connect(audioCtx.destination);
         } catch (e) {
@@ -36,10 +36,19 @@
 
     function setVolume(vol) {
         currentVolume = Math.max(0, Math.min(1, vol));
-        audio.volume = currentVolume;
+        
+
+        try {
+            audio.volume = currentVolume;
+        } catch (e) {}
+
         if (gainNode && audioCtx) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
             gainNode.gain.setTargetAtTime(currentVolume, audioCtx.currentTime, 0.05);
         }
+        
         if (volFill) volFill.style.width = (currentVolume * 100) + '%';
     }
 
@@ -59,7 +68,6 @@
             if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
 
             setAllStatus("Conectado");
-            // audio.load(); // Removido: o Safari/iOS quebra a Web Audio API (e o controle de volume) se o áudio for recarregado.
             const playPromise = audio.play();
 
             if (playPromise !== undefined) {
@@ -67,8 +75,8 @@
                     isPlaying = true;
                     updateUI(true);
                 }).catch(error => {
-                    console.error("Erro ao reproduzir:", error);
-                    setAllStatus("Erro ao carregar");
+                    console.error("Estamos com instabilidade:", error);
+                    setAllStatus("Estamos com instabilidade");
                     isPlaying = false;
                     updateUI(false);
                 });
@@ -89,13 +97,44 @@
 
     const volTrack = document.querySelector('.vol-track');
     if (volTrack && volFill) {
+
         volTrack.addEventListener('click', (e) => {
             const rect = volTrack.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const width = rect.width;
             setVolume(x / width);
         });
+
+
+        const handleTouch = (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = volTrack.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const width = rect.width;
+            setVolume(x / width);
+        };
+
+        volTrack.addEventListener('touchstart', handleTouch, { passive: false });
+        volTrack.addEventListener('touchmove', handleTouch, { passive: false });
     }
+
+    document.querySelectorAll('.vol-btn').forEach(btn => {
+        btn.addEventListener('touchstart', function(e) {
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        }, { passive: true });
+    });
+
+    const unlockAudio = () => {
+        if (!audioCtx) initWebAudio();
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        document.removeEventListener('touchstart', unlockAudio);
+        document.removeEventListener('click', unlockAudio);
+    };
+    document.addEventListener('touchstart', unlockAudio, { passive: true });
+    document.addEventListener('click', unlockAudio, { passive: true });
 
     function changeVolume(delta) {
         if (!audio) return;
@@ -175,14 +214,14 @@
             if (!response.ok) return;
             const data = await response.json();
 
-            // Atualiza informações do programa atual
+
             const agoraNome = document.getElementById('agora-nome');
             const agoraLocutor = document.getElementById('agora-locutor');
             const agoraFotoContainer = document.getElementById('agora-foto-container');
-            
+
             if (agoraNome) agoraNome.textContent = data.agora.nome;
             if (agoraLocutor) agoraLocutor.textContent = "com " + data.agora.locutor_nome;
-            
+
             if (agoraFotoContainer) {
                 if (data.agora.locutor_foto) {
                     agoraFotoContainer.innerHTML = `<img src="${data.agora.locutor_foto}" alt="${data.agora.locutor_nome}" class="loc-photo" id="agora-foto-img">`;
@@ -191,7 +230,7 @@
                 }
             }
 
-            // Atualiza informações da próxima atração
+
             const proxNome = document.getElementById('prox-nome');
             const proxLocutor = document.getElementById('prox-locutor');
             const proxFotoContainer = document.getElementById('prox-foto-container');
@@ -200,7 +239,7 @@
             if (proxNome) proxNome.textContent = data.proximo.nome;
             if (proxLocutor) proxLocutor.textContent = "com " + data.proximo.locutor_nome;
             if (proxHorario) proxHorario.textContent = data.proximo.horario;
-            
+
             if (proxFotoContainer) {
                 if (data.proximo.locutor_foto) {
                     proxFotoContainer.innerHTML = `<img src="${data.proximo.locutor_foto}" alt="${data.proximo.locutor_nome}" style="width:100%; height:100%; object-fit:cover;" id="prox-foto-img">`;
@@ -209,12 +248,12 @@
                 }
             }
         } catch (e) {
-            console.warn("Erro ao atualizar programação", e);
+            console.warn("Programação em atualização", e);
         }
     }
 
     setInterval(updateMetadata, 50000);
-    setInterval(updateProgramacao, 60000); // Atualiza a grade de programação a cada 1 minuto
+    setInterval(updateProgramacao, 60000);
 
     let waitingTimer = null;
 
@@ -222,7 +261,7 @@
         audio.onwaiting = function () {
             if (!isPlaying) return;
             waitingTimer = setTimeout(() => {
-                if (isPlaying) setAllStatus("Conectando...");
+                if (isPlaying) setAllStatus("Conectado");
             }, 2500);
         };
 
@@ -238,7 +277,7 @@
 
         audio.onerror = function () {
             if (waitingTimer) clearTimeout(waitingTimer);
-            setAllStatus("Erro na Conexão");
+            setAllStatus("Estamos com instabilidade");
             updateUI(false);
             isPlaying = false;
         };

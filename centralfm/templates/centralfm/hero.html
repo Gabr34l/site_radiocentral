@@ -558,12 +558,10 @@
     }
 
     @media (max-width: 960px) {
-        /* ── Cabeçalho ── */
         .hero-top {
             padding: 12px 20px 0;
         }
 
-        /* ── Corpo principal: empilha tudo verticalmente e centraliza ── */
         .hero-body {
             padding: 20px 20px 32px;
         }
@@ -576,7 +574,6 @@
             text-align: center;
         }
 
-        /* ── Coluna esquerda: título "Central FM" ── */
         .player-left {
             flex: none;
             width: 100%;
@@ -597,7 +594,6 @@
             font-size: 18px;
         }
 
-        /* ── Coluna central: play + controles ── */
         .player-center {
             flex: none;
             padding: 0;
@@ -634,7 +630,6 @@
             height: 6px;
         }
 
-        /* ── Coluna direita: locutor + próximo programa ── */
         .player-right {
             flex: none;
             padding-left: 0;
@@ -781,10 +776,10 @@
                 <div class="loc-current"
                     style="padding-bottom: 20px; width: 100%; display: flex; flex-direction: column; align-items: center;">
                     <div class="loc-photo-wrap" id="agora-foto-container">
-                        {% if programa_agora.locutor.media_url %}
-                        <img src="{{ programa_agora.locutor.media_url }}" alt="{{ programa_agora.locutor.nome }}"
+                        {% if programa_agora.apresentador_atual.media_url %}
+                        <img src="{{ programa_agora.apresentador_atual.media_url }}" alt="{{ programa_agora.apresentador_atual.nome }}"
                             class="loc-photo" id="agora-foto-img"
-                            {% if programa_agora.locutor.tem_gif %}style="image-rendering: auto;"{% endif %}>
+                            {% if programa_agora.apresentador_atual.tem_gif %}style="image-rendering: auto;"{% endif %}>
                         {% else %}
                         <div class="loc-photo" id="agora-foto-fallback"
                             style="background:#0d5c24; display:flex; align-items:center; justify-content:center; color:var(--accent); font-weight:800; font-size:42px;">
@@ -798,8 +793,8 @@
                             </div>
                             <span class="loc-time js-status-text">No Ar</span>
                         </div>
-                        <h3 class="loc-prog-name" id="agora-nome">{% if programa_agora %}{{ programa_agora.nome }}{% else %}101 Mais Tocadas{% endif %}</h3>
-                        <span class="loc-name" id="agora-locutor">{% if programa_agora and programa_agora.locutor %}com {{ programa_agora.locutor.nome }}{% else %}com Equipe Central{% endif %}</span>
+                        <h3 class="loc-prog-name" id="agora-nome">{{ programa_agora.nome|default:"101 Mais Tocadas" }}</h3>
+                        <span class="loc-name" id="agora-locutor">{% if programa_agora and programa_agora.apresentador_atual %}com {{ programa_agora.apresentador_atual.nome }}{% else %}com Equipe Central{% endif %}</span>
                     </div>
                 </div>
 
@@ -807,8 +802,8 @@
 
                 <div class="prox-wrap">
                     <div class="prox-photo" id="prox-foto-container">
-                        {% if proximo_programa.locutor.media_url %}
-                        <img src="{{ proximo_programa.locutor.media_url }}" alt="{{ proximo_programa.locutor.nome }}"
+                        {% if proximo_programa.apresentador_atual.media_url %}
+                        <img src="{{ proximo_programa.apresentador_atual.media_url }}" alt="{{ proximo_programa.apresentador_atual.nome }}"
                             style="width:100%; height:100%; object-fit:cover;" id="prox-foto-img">
                         {% else %}
                         <div id="prox-foto-fallback"
@@ -818,8 +813,8 @@
                     </div>
                     <div class="prox-info">
                         <div class="prox-label">Próxima atração</div>
-                        <div class="prox-program" id="prox-nome">{% if proximo_programa %}{{ proximo_programa.nome }}{% else %}Programação Especial{% endif %}</div>
-                        <div class="prox-name" id="prox-locutor">{% if proximo_programa and proximo_programa.locutor %}com {{ proximo_programa.locutor.nome }}{% else %}com Equipe Central{% endif %}</div>
+                        <div class="prox-program" id="prox-nome">{{ proximo_programa.nome|default:"Programação Especial" }}</div>
+                        <div class="prox-name" id="prox-locutor">{% if proximo_programa and proximo_programa.apresentador_atual %}com {{ proximo_programa.apresentador_atual.nome }}{% else %}com Equipe Central{% endif %}</div>
                     </div>
                     <div class="prox-divider"></div>
                     <div class="prox-time-badge">

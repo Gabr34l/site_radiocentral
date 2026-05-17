@@ -3,9 +3,6 @@ from urllib.parse import quote
 from django.templatetags.static import static
 
 class Locutor(models.Model):
-    """
-    Model para representar os locutores/profissionais da rádio.
-    """
     nome = models.CharField('Nome do Locutor', max_length=100)
     foto = models.ImageField('Foto do Locutor', upload_to='locutores/', blank=True, null=True)
     gif_animado = models.FileField(
@@ -15,10 +12,11 @@ class Locutor(models.Model):
         null=True,
         help_text="Se preenchido, substitui a foto estática por um GIF animado. Use .gif ou .webp animado."
     )
+    bio = models.TextField('Biografia (Curta)', blank=True, null=True, help_text="Uma frase curta sobre o locutor ou seu bordão.")
+    instagram = models.URLField('Link do Instagram', blank=True, null=True, help_text="Link completo para o perfil do Instagram.")
 
     @property
     def media_url(self):
-        """Retorna a URL do GIF se existir, caso contrário retorna a foto."""
         if self.gif_animado:
             return self.gif_animado.url
         if self.foto:
@@ -27,7 +25,6 @@ class Locutor(models.Model):
 
     @property
     def tem_gif(self):
-        """Indica se o locutor possui GIF animado."""
         return bool(self.gif_animado)
 
     def __str__(self):
@@ -38,10 +35,6 @@ class Locutor(models.Model):
         verbose_name_plural = 'Locutores'
 
 class Promocao(models.Model):
-    """
-    Gerencia as promoções ativas que aparecem no carrossel do site.
-    Cada promoção pode ter um link direto para o WhatsApp já com mensagem pronta.
-    """
     titulo = models.CharField('Título da Promoção', max_length=150)
     descricao = models.TextField('Descrição', blank=True, null=True)
     imagem_banner = models.ImageField('Banner da Promoção', upload_to='promocoes/', blank=True, null=True)
@@ -57,8 +50,6 @@ class Promocao(models.Model):
 
     @property
     def whatsapp_url(self):
-        """Retorna o link do WhatsApp. Usa o campo manual se preenchido,
-        caso contrário gera automaticamente a partir do título."""
         if self.link_whatsapp:
             return self.link_whatsapp
         mensagem = f'Quero participar da {self.titulo}'
@@ -66,7 +57,6 @@ class Promocao(models.Model):
 
     def __str__(self):
         return self.titulo
-
         
     class Meta:
         verbose_name = 'Promoção'
@@ -75,10 +65,6 @@ class Promocao(models.Model):
 
 
 class Ganhador(models.Model):
-    """
-    Model para gerenciar os ganhadores da semana.
-    Exibidos em destaque abaixo do carrossel.
-    """
     nome = models.CharField('Nome do Ganhador', max_length=100)
     foto = models.ImageField(
         'Foto do Ganhador', 
@@ -106,10 +92,6 @@ class Ganhador(models.Model):
 
 
 class Programa(models.Model):
-    """
-    Representa o programa da grade de programação da rádio Central FM.
-    Controla automaticamente o que é exibido no site "No Ar Agora".
-    """
     DIAS_SEMANA = [
         ('segunda', 'Segunda-feira'),
         ('terca', 'Terça-feira'),
@@ -129,10 +111,20 @@ class Programa(models.Model):
         related_name='programas',
         help_text="Quem está apresentando este programa?"
     )
+    locutor_substituto = models.ForeignKey(
+        Locutor, on_delete=models.SET_NULL, null=True, blank=True, 
+        related_name='programas_como_substituto',
+        verbose_name='Locutor Substituto',
+        help_text="Selecione um locutor para substituir temporariamente o titular neste programa."
+    )
     imagem_banner = models.ImageField(
         'Banner do Programa', upload_to='programas/banners/', 
         blank=True, null=True
     )
+
+    @property
+    def apresentador_atual(self):
+        return self.locutor_substituto if self.locutor_substituto else self.locutor
 
     def __str__(self):
         return f"{self.nome} ({self.get_dia_semana_display()})"

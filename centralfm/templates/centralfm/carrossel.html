@@ -43,7 +43,7 @@
     .carousel-card {
         flex: 0 0 auto;
         flex-shrink: 0;
-        width: calc((100% - (4 * 14px)) / 5); /* Ajuste para 5 cartas caberem perfeitamente */
+        width: calc((100% - (4 * 14px)) / 5);
         scroll-snap-align: start;
         height: 110px;
         border-radius: 16px;
@@ -136,7 +136,7 @@
 
     @media (max-width: 1366px) and (min-width: 961px) {
         .carousel-card {
-            width: calc((100% - (2 * 14px)) / 3); /* Ajuste para 3 cartas caberem perfeitamente */
+            width: calc((100% - (2 * 14px)) / 3);
             height: 100px;
         }
 
@@ -164,14 +164,13 @@
         }
 
         .carousel-container {
-            overflow: hidden; /* garante que nada vaze fora do container */
+            overflow: hidden;
         }
 
         .carousel-track {
             flex-direction: column;
             overflow-y: auto;
             overflow-x: hidden;
-            /* 2 cards × 140px + 1 gap × 14px = exatamente sem cantinho */
             height: calc(2 * 140px + 1 * 14px);
             scroll-snap-type: y mandatory;
         }
@@ -213,7 +212,6 @@
                     {% endif %}
                 ></a>
                 {% empty %}
-                {# Fallback: nenhuma promoção ativa no banco de dados #}
                 <div class="carousel-card" style="background: linear-gradient(135deg, #0d5c24 0%, #1a8c38 100%); justify-content: center; color: #facc15; font-size: 13px; text-align: center; padding: 12px;">
                     Nenhuma promoção ativa no momento.
                 </div>
@@ -232,7 +230,6 @@
 <script>
     const carouselBar = document.getElementById('promoCarousel');
     if (carouselBar) {
-        // Clone all cards and append to create seamless infinite loop
         const originalCards = Array.from(carouselBar.querySelectorAll('.carousel-card'));
         originalCards.forEach(card => {
             const clone = card.cloneNode(true);
@@ -266,7 +263,6 @@
             }
 
             setTimeout(() => {
-                // If we've scrolled into the cloned section, silently jump back
                 if (isVertical()) {
                     if (carouselBar.scrollTop >= totalOriginalSize() - 2) {
                         carouselBar.style.scrollBehavior = 'auto';
