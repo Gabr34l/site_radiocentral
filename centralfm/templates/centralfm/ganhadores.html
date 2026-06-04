@@ -1,9 +1,18 @@
 {% if ganhadores %}
 <style>
     .winners-section {
+        background: transparent;
+        padding: 20px 14px 40px 14px;
+    }
+
+    .winners-wrapper {
+        width: 100%;
+        max-width: 1280px;
+        margin: 0 auto;
         background: #fff;
-        padding: 24px 32px 60px 32px;
-        border-top: 1px solid #e8e8e8;
+        padding: 40px 24px 60px 24px;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     }
 
 
@@ -156,22 +165,24 @@
 </style>
 
 <section class="winners-section">
-    <div class="winners-header">
-        <h2 class="winners-title">Ganhadores da Semana</h2>
-        <p class="winners-subtitle">
-            Semana de {{ ganhadores.0.data_inicio_semana|date:"d/m" }} a {{ ganhadores.0.data_fim_semana|date:"d/m" }}
-        </p>
-    </div>
-
-    <div class="winners-grid">
-        {% for ganhador in ganhadores %}
-        <div class="winner-card">
-            {% if ganhador.foto %}
-            <img src="{{ ganhador.foto.url }}" alt="{{ ganhador.nome }}" class="winner-img">
-            {% endif %}
+    <div class="winners-wrapper">
+        <div class="winners-header">
+            <h2 class="winners-title">Ganhadores da Semana</h2>
+            <p class="winners-subtitle">
+                Semana de {{ ganhadores.0.data_inicio_semana|date:"d/m" }} a {{ ganhadores.0.data_fim_semana|date:"d/m" }}
+            </p>
         </div>
 
-        {% endfor %}
+        <div class="winners-grid">
+            {% for ganhador in ganhadores %}
+            <div class="winner-card">
+                {% if ganhador.foto %}
+                <img src="{{ ganhador.foto.url }}" alt="{{ ganhador.nome }}" class="winner-img">
+                {% endif %}
+            </div>
+
+            {% endfor %}
+        </div>
     </div>
 </section>
 {% endif %}
