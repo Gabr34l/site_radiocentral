@@ -10,9 +10,13 @@ Ele delega as rotas para os módulos corretos:
 Em modo DEBUG (desenvolvimento local), também serve os arquivos
 de mídia (fotos de locutores, ganhadores, etc.).
 """
+# pyrefly: ignore [missing-import]
 from django.contrib import admin
+# pyrefly: ignore [missing-import]
 from django.urls import path, include
+# pyrefly: ignore [missing-import]
 from django.conf import settings
+# pyrefly: ignore [missing-import]
 from django.conf.urls.static import static
 
 urlpatterns = [

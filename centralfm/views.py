@@ -1,5 +1,7 @@
 import requests
+# pyrefly: ignore [missing-import]
 from django.shortcuts import render
+# pyrefly: ignore [missing-import]
 from django.http import JsonResponse
 
 from .models import Promocao, Ganhador, Programa, Locutor

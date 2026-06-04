@@ -14,7 +14,9 @@ Ambientes suportados:
 """
 from pathlib import Path
 import os
+
 import dj_database_url
+
 from dotenv import load_dotenv
 
 # Carrega variáveis do arquivo .env

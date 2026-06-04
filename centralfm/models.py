@@ -1,5 +1,7 @@
+# pyrefly: ignore [missing-import]
 from django.db import models
 from urllib.parse import quote
+# pyrefly: ignore [missing-import]
 from django.templatetags.static import static
 
 class Locutor(models.Model):
