@@ -28,9 +28,9 @@ class LocutorAdmin(admin.ModelAdmin):
 
 @admin.register(Promocao)
 class PromocaoAdmin(admin.ModelAdmin):
-    list_display = ('titulo', 'ativa', 'criada_em')
+    list_display = ('titulo', 'ativa', 'data_fim', 'criada_em')
     list_editable = ('ativa',)
-    list_filter = ('ativa',)
+    list_filter = ('ativa', 'data_fim')
     search_fields = ('titulo',)
 
 

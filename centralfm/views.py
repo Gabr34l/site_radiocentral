@@ -3,13 +3,21 @@ import requests
 from django.shortcuts import render
 # pyrefly: ignore [missing-import]
 from django.http import JsonResponse
+# pyrefly: ignore [missing-import]
+from django.db.models import Q
+# pyrefly: ignore [missing-import]
+from django.utils import timezone
 
 from .models import Promocao, Ganhador, Programa, Locutor
 from .utils import get_current_and_next_program, normalize_radio_text
 
 
 def home(request):
-    promocoes = Promocao.objects.filter(ativa=True)
+    hoje = timezone.localdate()
+    promocoes = Promocao.objects.filter(
+        Q(data_fim__isnull=True) | Q(data_fim__gte=hoje),
+        ativa=True
+    )
 
     ganhadores = Ganhador.objects.filter(ativo=True).select_related('promocao').order_by('-data_inicio_semana', '-criado_em')[:6]
 

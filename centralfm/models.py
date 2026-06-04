@@ -46,6 +46,12 @@ class Promocao(models.Model):
         help_text="Deixe em branco para gerar automaticamente a partir do título."
     )
     ativa = models.BooleanField('Promoção Ativa?', default=True)
+    data_fim = models.DateField(
+        'Data de Encerramento',
+        blank=True,
+        null=True,
+        help_text="Opcional. Se preenchido, a promoção sairá do carrossel automaticamente após esta data."
+    )
     criada_em = models.DateTimeField('Criada em', auto_now_add=True)
 
     NUMERO_WHATSAPP = '5534996491118'
