@@ -8,6 +8,7 @@
 
     .bottom-section-wrapper {
         width: 100%;
+        max-width: 1280px;
         margin: 0 auto;
         display: flex;
         gap: 14px;
@@ -207,6 +208,17 @@
 
         .bottom-section-wrapper {
             gap: 14px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .carousel-card {
+            height: 110px;
+            min-height: 110px;
+        }
+
+        .carousel-track {
+            height: calc(2 * 110px + 1 * 14px);
         }
     }
 </style>
