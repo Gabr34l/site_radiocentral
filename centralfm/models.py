@@ -60,7 +60,7 @@ class Promocao(models.Model):
     def whatsapp_url(self):
         if self.link_whatsapp:
             return self.link_whatsapp
-        mensagem = f'Quero participar da {self.titulo}'
+        mensagem = f'Quero participar da promoção {self.titulo}'
         return f'https://wa.me/{self.NUMERO_WHATSAPP}?text={quote(mensagem)}'
 
     def __str__(self):
