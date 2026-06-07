@@ -166,7 +166,7 @@
 
     @media (max-width: 960px) {
         .bottom-section {
-            padding: 20px 14px;
+            padding: 10px 14px 20px; /* Reduced top padding to pull carousel up */
         }
 
         .bottom-section-wrapper {
@@ -188,11 +188,13 @@
             overflow-x: auto;
             overflow-y: hidden;
             scroll-snap-type: x mandatory;
+            gap: 10px; /* Reduced gap on mobile */
         }
 
-        .carousel-card {
-            width: 270px;
-            min-width: 270px;
+        /* Target only the scrolling track cards to show exactly 2 side-by-side */
+        .carousel-track .carousel-card {
+            width: calc((100% - 10px) / 2);
+            min-width: calc((100% - 10px) / 2);
             height: 115px;
             min-height: 115px;
             flex-shrink: 0;
@@ -202,7 +204,7 @@
 
     @media (max-width: 640px) {
         .bottom-section {
-            padding: 16px 10px;
+            padding: 8px 10px 16px; /* Reduced top padding */
         }
 
         .bottom-section-wrapper {
@@ -211,9 +213,13 @@
     }
 
     @media (max-width: 480px) {
-        .carousel-card {
-            width: 230px;
-            min-width: 230px;
+        .carousel-track {
+            gap: 8px; /* Slightly smaller gap on very small devices */
+        }
+
+        .carousel-track .carousel-card {
+            width: calc((100% - 8px) / 2);
+            min-width: calc((100% - 8px) / 2);
             height: 100px;
             min-height: 100px;
         }
@@ -263,7 +269,9 @@
 
         const cardStep = () => {
             const first = carouselBar.querySelector('.carousel-card');
-            return first ? first.offsetWidth + 14 : 0;
+            if (!first) return 0;
+            const gap = parseInt(window.getComputedStyle(carouselBar).gap) || 14;
+            return first.offsetWidth + gap;
         };
 
         const totalOriginalSize = () => cardStep() * originalCards.length;
