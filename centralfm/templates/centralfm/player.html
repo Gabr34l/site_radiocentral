@@ -1,10 +1,5 @@
-<audio id="mainAudio" preload="none" crossorigin="anonymous">
-    <source src="https://8036.brasilstream.com.br/stream" type="audio/mpeg">
-</audio>
-
 <script>
     const STREAM_URL = "https://8036.brasilstream.com.br/stream";
-    const audio = document.getElementById('mainAudio');
     const statusTexts = document.querySelectorAll('.js-status-text');
     const playIcons = document.querySelectorAll('.js-play-icon');
     const pauseIcons = document.querySelectorAll('.js-pause-icon');
@@ -13,28 +8,85 @@
     // Detecção robusta de iOS (iPhone, iPad, iPod)
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
+    let audio = null;
     let isPlaying = false;
     let audioCtx = null;
     let gainNode = null;
     let currentVolume = 0.6;
+    let waitingTimer = null;
 
-    audio.volume = currentVolume;
     if (volFill) volFill.style.width = (currentVolume * 100) + '%';
 
-    // Inicializa Web Audio API apenas no iOS, já que a propriedade .volume padrão é bloqueada pela Apple
+    function createAudioElement() {
+        // Se já existir, removemos o elemento anterior para evitar vazamentos de memória
+        if (audio) {
+            try {
+                audio.pause();
+                audio.src = "";
+                audio.load();
+            } catch (e) {}
+            if (audio.parentNode) {
+                audio.parentNode.removeChild(audio);
+            }
+            audio = null;
+        }
+
+        // Instancia o novo elemento de áudio
+        audio = document.createElement('audio');
+        audio.id = 'mainAudio';
+        audio.preload = 'none';
+        audio.crossOrigin = 'anonymous';
+
+        // Vincula os eventos ao elemento dinâmico
+        audio.onwaiting = function () {
+            if (!isPlaying) return;
+            waitingTimer = setTimeout(() => {
+                if (isPlaying) setAllStatus("Conectado");
+            }, 2500);
+        };
+
+        audio.onplaying = function () {
+            if (waitingTimer) {
+                clearTimeout(waitingTimer);
+                waitingTimer = null;
+            }
+            if (isPlaying) {
+                updateMetadata();
+            }
+        };
+
+        audio.onerror = function () {
+            if (!isPlaying) return; // Ignorar erros gerados ao esvaziar o src no pause
+            if (waitingTimer) clearTimeout(waitingTimer);
+            setAllStatus("Estamos com instabilidade");
+            updateUI(false);
+            isPlaying = false;
+        };
+
+        document.body.appendChild(audio);
+    }
+
+    // Inicializa Web Audio API apenas no iOS, vinculando o elemento dinâmico atual
     function initIOSWebAudio() {
-        if (!isIOS || audioCtx) return;
+        if (!isIOS) return;
         try {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             if (!AudioContext) return;
 
-            audioCtx = new AudioContext();
-            const source = audioCtx.createMediaElementSource(audio);
-            gainNode = audioCtx.createGain();
-            gainNode.gain.value = currentVolume;
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+            if (!gainNode) {
+                gainNode = audioCtx.createGain();
+                gainNode.gain.value = currentVolume;
+                gainNode.connect(audioCtx.destination);
+            }
 
-            source.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
+            // Sempre criamos um novo source node para o elemento ativo e conectamos ao GainNode
+            if (audio) {
+                const source = audioCtx.createMediaElementSource(audio);
+                source.connect(gainNode);
+            }
         } catch (e) {
             console.warn("Web Audio API indisponível no iOS:", e);
         }
@@ -44,22 +96,21 @@
         currentVolume = Math.max(0, Math.min(1, vol));
         
         if (isIOS) {
-            // No iOS controlamos o ganho de áudio digitalmente via GainNode
             if (gainNode) {
                 if (audioCtx && audioCtx.state === 'suspended') {
                     audioCtx.resume();
                 }
-                // Modificação robusta para iOS: definimos o valor diretamente além do setValueAtTime
                 gainNode.gain.value = currentVolume;
                 try {
                     gainNode.gain.setValueAtTime(currentVolume, audioCtx.currentTime);
                 } catch (e) {}
             }
         } else {
-            // Em outros dispositivos (Android/PC) usamos o controle padrão de volume do HTML5
-            try {
-                audio.volume = currentVolume;
-            } catch (e) {}
+            if (audio) {
+                try {
+                    audio.volume = currentVolume;
+                } catch (e) {}
+            }
         }
 
         if (volFill) volFill.style.width = (currentVolume * 100) + '%';
@@ -70,17 +121,24 @@
     }
 
     function togglePlay() {
-        if (!audio) return;
-
         if (isPlaying) {
-            audio.pause();
-            audio.src = ""; // Parar o download de buffer no mobile para economizar dados e bateria
-            try {
-                audio.load();
-            } catch (e) {}
+            if (audio) {
+                audio.pause();
+                audio.src = ""; // Parar download do buffer
+                try {
+                    audio.load();
+                } catch (e) {}
+                if (audio.parentNode) {
+                    audio.parentNode.removeChild(audio);
+                }
+                audio = null;
+            }
             isPlaying = false;
             updateUI(false);
         } else {
+            // Cria o elemento de áudio dinâmico
+            createAudioElement();
+
             if (isIOS) {
                 initIOSWebAudio();
                 if (audioCtx && audioCtx.state === 'suspended') {
@@ -90,8 +148,10 @@
 
             setAllStatus("Conectado");
             
-            // Reatribui a URL original para forçar o carregamento do áudio ao vivo
             audio.src = STREAM_URL;
+            if (!isIOS) {
+                audio.volume = currentVolume;
+            }
             audio.load();
 
             const playPromise = audio.play();
@@ -310,32 +370,4 @@
     setInterval(updateMetadata, 50000);
     setInterval(updateProgramacao, 60000);
 
-    let waitingTimer = null;
-
-    if (audio) {
-        audio.onwaiting = function () {
-            if (!isPlaying) return;
-            waitingTimer = setTimeout(() => {
-                if (isPlaying) setAllStatus("Conectado");
-            }, 2500);
-        };
-
-        audio.onplaying = function () {
-            if (waitingTimer) {
-                clearTimeout(waitingTimer);
-                waitingTimer = null;
-            }
-            if (isPlaying) {
-                updateMetadata();
-            }
-        };
-
-        audio.onerror = function () {
-            if (!isPlaying) return; // Ignorar erros gerados ao esvaziar o src no pause
-            if (waitingTimer) clearTimeout(waitingTimer);
-            setAllStatus("Estamos com instabilidade");
-            updateUI(false);
-            isPlaying = false;
-        };
-    }
 </script>
