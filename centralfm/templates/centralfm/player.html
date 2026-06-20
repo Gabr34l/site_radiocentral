@@ -1,8 +1,9 @@
-<audio id="mainAudio" preload="auto" crossorigin="anonymous">
+<audio id="mainAudio" preload="none" crossorigin="anonymous">
     <source src="https://8036.brasilstream.com.br/stream" type="audio/mpeg">
 </audio>
 
 <script>
+    const STREAM_URL = "https://8036.brasilstream.com.br/stream";
     const audio = document.getElementById('mainAudio');
     const statusTexts = document.querySelectorAll('.js-status-text');
     const playIcons = document.querySelectorAll('.js-play-icon');
@@ -10,45 +11,16 @@
     const volFill = document.getElementById('volFill');
 
     let isPlaying = false;
-    let audioCtx = null;
-    let gainNode = null;
     let currentVolume = 0.6;
 
     audio.volume = currentVolume;
     if (volFill) volFill.style.width = (currentVolume * 100) + '%';
 
-    function initWebAudio() {
-        try {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            if (!AudioContext || audioCtx) return;
-
-            audioCtx = new AudioContext();
-            const source = audioCtx.createMediaElementSource(audio);
-            gainNode = audioCtx.createGain();
-            gainNode.gain.value = currentVolume;
-
-            source.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-        } catch (e) {
-            console.warn("Web Audio API indisponível:", e);
-        }
-    }
-
     function setVolume(vol) {
         currentVolume = Math.max(0, Math.min(1, vol));
-        
-
         try {
             audio.volume = currentVolume;
         } catch (e) {}
-
-        if (gainNode && audioCtx) {
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            gainNode.gain.setTargetAtTime(currentVolume, audioCtx.currentTime, 0.05);
-        }
-        
         if (volFill) volFill.style.width = (currentVolume * 100) + '%';
     }
 
@@ -61,13 +33,19 @@
 
         if (isPlaying) {
             audio.pause();
+            audio.src = ""; // Parar o download de buffer no mobile para economizar dados e bateria
+            try {
+                audio.load();
+            } catch (e) {}
             isPlaying = false;
             updateUI(false);
         } else {
-            if (!audioCtx) initWebAudio();
-            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-
             setAllStatus("Conectado");
+            
+            // Reatribui a URL original para forçar o carregamento do áudio ao vivo
+            audio.src = STREAM_URL;
+            audio.load();
+
             const playPromise = audio.play();
 
             if (playPromise !== undefined) {
@@ -97,14 +75,12 @@
 
     const volTrack = document.querySelector('.vol-track');
     if (volTrack && volFill) {
-
         volTrack.addEventListener('click', (e) => {
             const rect = volTrack.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const width = rect.width;
             setVolume(x / width);
         });
-
 
         const handleTouch = (e) => {
             e.preventDefault();
@@ -118,23 +94,6 @@
         volTrack.addEventListener('touchstart', handleTouch, { passive: false });
         volTrack.addEventListener('touchmove', handleTouch, { passive: false });
     }
-
-    document.querySelectorAll('.vol-btn').forEach(btn => {
-        btn.addEventListener('touchstart', function(e) {
-            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-        }, { passive: true });
-    });
-
-    const unlockAudio = () => {
-        if (!audioCtx) initWebAudio();
-        if (audioCtx && audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
-        document.removeEventListener('touchstart', unlockAudio);
-        document.removeEventListener('click', unlockAudio);
-    };
-    document.addEventListener('touchstart', unlockAudio, { passive: true });
-    document.addEventListener('click', unlockAudio, { passive: true });
 
     function changeVolume(delta) {
         if (!audio) return;
@@ -276,6 +235,7 @@
         };
 
         audio.onerror = function () {
+            if (!isPlaying) return; // Ignorar erros gerados ao esvaziar o src no pause
             if (waitingTimer) clearTimeout(waitingTimer);
             setAllStatus("Estamos com instabilidade");
             updateUI(false);
