@@ -53,6 +53,10 @@
         background-clip: padding-box;
     }
 
+    .winner-card[data-clone="true"] {
+        display: none;
+    }
+
     .winner-card::before {
         content: '';
         position: absolute;
@@ -161,6 +165,10 @@
             scroll-snap-align: start;
         }
 
+        .winner-card[data-clone="true"] {
+            display: block;
+        }
+
         .winner-card:hover {
             transform: none;
             box-shadow: none;
@@ -197,7 +205,7 @@
         </p>
     </div>
 
-    <div class="winners-grid">
+    <div class="winners-grid" id="winnersGrid">
         {% for ganhador in ganhadores %}
         <div class="winner-card">
             {% if ganhador.foto %}
@@ -208,4 +216,52 @@
         {% endfor %}
     </div>
 </section>
+
+<script>
+    const winnersGrid = document.getElementById('winnersGrid');
+    if (winnersGrid) {
+        const originalCards = Array.from(winnersGrid.querySelectorAll('.winner-card'));
+        
+        if (originalCards.length > 0) {
+            originalCards.forEach(card => {
+                const clone = card.cloneNode(true);
+                clone.setAttribute('data-clone', 'true');
+                clone.setAttribute('aria-hidden', 'true');
+                winnersGrid.appendChild(clone);
+            });
+
+            const cardStep = () => {
+                const first = winnersGrid.querySelector('.winner-card:not([data-clone="true"])');
+                if (!first) return 0;
+                const gap = parseInt(window.getComputedStyle(winnersGrid).gap) || 10;
+                return first.offsetWidth + gap;
+            };
+
+            const totalOriginalSize = () => cardStep() * originalCards.length;
+
+            let isScrolling = false;
+
+            setInterval(() => {
+                if (window.innerWidth > 960) return;
+                if (isScrolling) return;
+
+                const step = cardStep();
+                if (!step) return;
+
+                isScrolling = true;
+                
+                winnersGrid.scrollBy({ left: step, behavior: 'smooth' });
+
+                setTimeout(() => {
+                    if (winnersGrid.scrollLeft >= totalOriginalSize() - 2) {
+                        winnersGrid.style.scrollBehavior = 'auto';
+                        winnersGrid.scrollLeft -= totalOriginalSize();
+                        winnersGrid.style.scrollBehavior = '';
+                    }
+                    isScrolling = false;
+                }, 700);
+            }, 3500);
+        }
+    }
+</script>
 {% endif %}
