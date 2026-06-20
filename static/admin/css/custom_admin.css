@@ -1,4 +1,3 @@
-/* Fix para a logo gigante na tela de login/logout do Jazzmin */
 .login-box .login-logo img {
     max-height: 120px;
     width: auto;
