@@ -8,19 +8,13 @@
 
     .winners-header {
         display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
-        padding-bottom: 16px;
-        margin-bottom: 32px;
-        flex-wrap: wrap;
-        gap: 16px;
-    }
-
-    .winners-header-left {
-        display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        text-align: center;
+        border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 24px;
+        margin-bottom: 32px;
+        gap: 6px;
     }
 
     .winners-prefix {
@@ -29,71 +23,60 @@
         color: #facc15;
         text-transform: uppercase;
         letter-spacing: 1.5px;
-        margin-bottom: 6px;
+        margin-bottom: 4px;
     }
 
     .winners-title {
         font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 36px;
+        font-size: 38px;
         font-weight: 900;
         color: #fff;
-        margin-bottom: 12px;
+        margin-bottom: 2px;
         letter-spacing: -1.5px;
         text-transform: uppercase;
         line-height: 1.1;
     }
 
+    .winners-date {
+        font-size: 13px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.5);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+    }
+
     .winners-status-container {
         display: flex;
         align-items: center;
+        justify-content: center;
     }
 
     .winners-decor-line {
-        width: 45px;
-        height: 4px;
+        width: 35px;
+        height: 3px;
         background: #facc15;
         border-radius: 2px;
-        margin-right: 10px;
+        margin-right: 8px;
     }
 
     .winners-status-text {
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 700;
-        color: rgba(255, 255, 255, 0.6);
+        color: rgba(255, 255, 255, 0.5);
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
 
-    .winners-header-right {
-        margin-bottom: 4px;
-    }
-
-    .winners-date {
-        font-size: 14px;
-        font-weight: 700;
-        color: rgba(255, 255, 255, 0.7);
-        letter-spacing: 1px;
-        text-transform: uppercase;
-    }
-
     @media (max-width: 768px) {
         .winners-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 14px;
-            padding-bottom: 12px;
+            padding-bottom: 18px;
             margin-bottom: 24px;
-            width: 100%;
         }
 
         .winners-title {
             font-size: 28px;
             letter-spacing: -1px;
-        }
-
-        .winners-header-right {
-            align-self: flex-start;
-            margin-top: -4px;
         }
     }
 
@@ -267,18 +250,14 @@
 
 <section class="winners-section">
     <div class="winners-header">
-        <div class="winners-header-left">
-            <span class="winners-prefix">PROMOÇÕES CENTRAL FM</span>
-            <h2 class="winners-title">Ganhadores da Semana</h2>
-            <div class="winners-status-container">
-                <div class="winners-decor-line"></div>
-                <span class="winners-status-text">Resultados confirmados</span>
-            </div>
-        </div>
-        <div class="winners-header-right">
-            <span class="winners-date">
-                {{ ganhadores.0.data_inicio_semana|date:"d" }} – {{ ganhadores.0.data_fim_semana|date:"d" }} {{ ganhadores.0.data_fim_semana|date:"M Y"|upper }}
-            </span>
+        <span class="winners-prefix">PROMOÇÕES CENTRAL FM</span>
+        <h2 class="winners-title">Ganhadores da Semana</h2>
+        <span class="winners-date">
+            {{ ganhadores.0.data_inicio_semana|date:"d" }} – {{ ganhadores.0.data_fim_semana|date:"d" }} {{ ganhadores.0.data_fim_semana|date:"M Y"|upper }}
+        </span>
+        <div class="winners-status-container">
+            <div class="winners-decor-line"></div>
+            <span class="winners-status-text">Resultados confirmados</span>
         </div>
     </div>
 
