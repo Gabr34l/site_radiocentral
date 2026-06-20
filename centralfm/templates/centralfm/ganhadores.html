@@ -2,7 +2,7 @@
 <style>
     .winners-section {
         background: transparent;
-        padding: 24px 14px 48px 14px;
+        padding: 24px 0 48px 0;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
     }
@@ -14,6 +14,8 @@
         text-align: center;
         border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
         padding-bottom: 24px;
+        padding-left: 14px;
+        padding-right: 14px;
         margin-bottom: 32px;
         gap: 6px;
     }
@@ -79,7 +81,7 @@
         width: 100%;
         max-width: 100%;
         margin: 0 auto;
-        padding: 0;
+        padding: 0 14px;
     }
 
     .winner-card {
@@ -184,7 +186,7 @@
 
     @media (max-width: 960px) {
         .winners-section {
-            padding: 16px 14px 32px 14px;
+            padding: 16px 0 32px 0;
         }
 
         .winners-grid {
@@ -196,6 +198,7 @@
             scrollbar-width: none;
             justify-content: flex-start;
             gap: 10px;
+            padding: 0 14px;
         }
 
         .winners-grid::-webkit-scrollbar {
@@ -220,7 +223,11 @@
 
     @media (max-width: 640px) {
         .winners-section {
-            padding: 12px 10px 24px 10px;
+            padding: 12px 0 24px 0;
+        }
+
+        .winners-grid {
+            padding: 0 10px;
         }
 
         .winners-title {
@@ -231,6 +238,7 @@
     @media (max-width: 480px) {
         .winners-grid {
             gap: 8px;
+            padding: 0 8px;
         }
 
         .winner-card {
