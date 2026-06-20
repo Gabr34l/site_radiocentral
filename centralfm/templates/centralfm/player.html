@@ -10,17 +10,58 @@
     const pauseIcons = document.querySelectorAll('.js-pause-icon');
     const volFill = document.getElementById('volFill');
 
+    // Detecção robusta de iOS (iPhone, iPad, iPod)
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
     let isPlaying = false;
+    let audioCtx = null;
+    let gainNode = null;
     let currentVolume = 0.6;
 
     audio.volume = currentVolume;
     if (volFill) volFill.style.width = (currentVolume * 100) + '%';
 
+    // Inicializa Web Audio API apenas no iOS, já que a propriedade .volume padrão é bloqueada pela Apple
+    function initIOSWebAudio() {
+        if (!isIOS || audioCtx) return;
+        try {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return;
+
+            audioCtx = new AudioContext();
+            const source = audioCtx.createMediaElementSource(audio);
+            gainNode = audioCtx.createGain();
+            gainNode.gain.value = currentVolume;
+
+            source.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+        } catch (e) {
+            console.warn("Web Audio API indisponível no iOS:", e);
+        }
+    }
+
     function setVolume(vol) {
         currentVolume = Math.max(0, Math.min(1, vol));
-        try {
-            audio.volume = currentVolume;
-        } catch (e) {}
+        
+        if (isIOS) {
+            // No iOS controlamos o ganho de áudio digitalmente via GainNode
+            if (gainNode) {
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                // Modificação robusta para iOS: definimos o valor diretamente além do setValueAtTime
+                gainNode.gain.value = currentVolume;
+                try {
+                    gainNode.gain.setValueAtTime(currentVolume, audioCtx.currentTime);
+                } catch (e) {}
+            }
+        } else {
+            // Em outros dispositivos (Android/PC) usamos o controle padrão de volume do HTML5
+            try {
+                audio.volume = currentVolume;
+            } catch (e) {}
+        }
+
         if (volFill) volFill.style.width = (currentVolume * 100) + '%';
     }
 
@@ -40,6 +81,13 @@
             isPlaying = false;
             updateUI(false);
         } else {
+            if (isIOS) {
+                initIOSWebAudio();
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+            }
+
             setAllStatus("Conectado");
             
             // Reatribui a URL original para forçar o carregamento do áudio ao vivo
@@ -75,11 +123,21 @@
 
     const volTrack = document.querySelector('.vol-track');
     if (volTrack && volFill) {
+        const handleVolControl = (vol) => {
+            if (isIOS) {
+                initIOSWebAudio();
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+            }
+            setVolume(vol);
+        };
+
         volTrack.addEventListener('click', (e) => {
             const rect = volTrack.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const width = rect.width;
-            setVolume(x / width);
+            handleVolControl(x / width);
         });
 
         const handleTouch = (e) => {
@@ -88,15 +146,53 @@
             const rect = volTrack.getBoundingClientRect();
             const x = touch.clientX - rect.left;
             const width = rect.width;
-            setVolume(x / width);
+            handleVolControl(x / width);
         };
 
         volTrack.addEventListener('touchstart', handleTouch, { passive: false });
         volTrack.addEventListener('touchmove', handleTouch, { passive: false });
     }
 
+    // Vinculação programática dos botões de Play e Volume para iOS/Android
+    const playBtn = document.getElementById('playBtn');
+    if (playBtn) {
+        const handlePlayClick = (e) => {
+            e.preventDefault();
+            togglePlay();
+        };
+        playBtn.addEventListener('click', handlePlayClick);
+        playBtn.addEventListener('touchstart', handlePlayClick, { passive: false });
+    }
+
+    const volDownBtn = document.getElementById('volDownBtn');
+    const volUpBtn = document.getElementById('volUpBtn');
+
+    if (volDownBtn) {
+        const handleVolDown = (e) => {
+            e.preventDefault();
+            changeVolume(-0.1);
+        };
+        volDownBtn.addEventListener('click', handleVolDown);
+        volDownBtn.addEventListener('touchstart', handleVolDown, { passive: false });
+    }
+
+    if (volUpBtn) {
+        const handleVolUp = (e) => {
+            e.preventDefault();
+            changeVolume(0.1);
+        };
+        volUpBtn.addEventListener('click', handleVolUp);
+        volUpBtn.addEventListener('touchstart', handleVolUp, { passive: false });
+    }
+
     function changeVolume(delta) {
         if (!audio) return;
+        if (isIOS) {
+            initIOSWebAudio();
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
         setVolume(currentVolume + delta);
     }
 

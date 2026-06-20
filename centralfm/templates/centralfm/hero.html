@@ -790,7 +790,7 @@
 
 
             <div class="player-center">
-                <button class="ctrl-btn play-btn-large js-play-btn" onclick="togglePlay()">
+                <button class="ctrl-btn play-btn-large js-play-btn" id="playBtn" title="Play/Pause">
                     <svg class="js-play-icon" viewBox="0 0 24 24">
                         <path d="M8 5v14l11-7z" />
                     </svg>
@@ -799,12 +799,12 @@
                     </svg>
                 </button>
                 <div class="player-controls">
-                    <button class="ctrl-btn vol-btn" onclick="changeVolume(-0.1)" title="Diminuir volume">
+                    <button class="ctrl-btn vol-btn" id="volDownBtn" title="Diminuir volume">
                         <svg viewBox="0 0 24 24">
                             <path d="M19 13H5v-2h14v2z" />
                         </svg>
                     </button>
-                    <button class="ctrl-btn vol-btn" onclick="changeVolume(0.1)" title="Aumentar volume">
+                    <button class="ctrl-btn vol-btn" id="volUpBtn" title="Aumentar volume">
                         <svg viewBox="0 0 24 24">
                             <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
                         </svg>
