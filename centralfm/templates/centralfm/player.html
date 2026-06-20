@@ -5,13 +5,9 @@
     const pauseIcons = document.querySelectorAll('.js-pause-icon');
     const volFill = document.getElementById('volFill');
 
-    // Detecção robusta de iOS (iPhone, iPad, iPod)
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
     let audio = null;
     let isPlaying = false;
-    let audioCtx = null;
-    let gainNode = null;
     let currentVolume = 0.6;
     let waitingTimer = null;
 
@@ -66,51 +62,13 @@
         document.body.appendChild(audio);
     }
 
-    // Inicializa Web Audio API apenas no iOS, vinculando o elemento dinâmico atual
-    function initIOSWebAudio() {
-        if (!isIOS) return;
-        try {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            if (!AudioContext) return;
-
-            if (!audioCtx) {
-                audioCtx = new AudioContext();
-            }
-            if (!gainNode) {
-                gainNode = audioCtx.createGain();
-                gainNode.gain.value = currentVolume;
-                gainNode.connect(audioCtx.destination);
-            }
-
-            // Sempre criamos um novo source node para o elemento ativo e conectamos ao GainNode
-            if (audio) {
-                const source = audioCtx.createMediaElementSource(audio);
-                source.connect(gainNode);
-            }
-        } catch (e) {
-            console.warn("Web Audio API indisponível no iOS:", e);
-        }
-    }
-
     function setVolume(vol) {
         currentVolume = Math.max(0, Math.min(1, vol));
         
-        if (isIOS) {
-            if (gainNode) {
-                if (audioCtx && audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
-                gainNode.gain.value = currentVolume;
-                try {
-                    gainNode.gain.setValueAtTime(currentVolume, audioCtx.currentTime);
-                } catch (e) {}
-            }
-        } else {
-            if (audio) {
-                try {
-                    audio.volume = currentVolume;
-                } catch (e) {}
-            }
+        if (audio) {
+            try {
+                audio.volume = currentVolume;
+            } catch (e) {}
         }
 
         if (volFill) volFill.style.width = (currentVolume * 100) + '%';
@@ -139,19 +97,10 @@
             // Cria o elemento de áudio dinâmico
             createAudioElement();
 
-            if (isIOS) {
-                initIOSWebAudio();
-                if (audioCtx && audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
-            }
-
             setAllStatus("Conectado");
             
             audio.src = STREAM_URL;
-            if (!isIOS) {
-                audio.volume = currentVolume;
-            }
+            audio.volume = currentVolume;
             audio.load();
 
             const playPromise = audio.play();
@@ -184,12 +133,6 @@
     const volTrack = document.querySelector('.vol-track');
     if (volTrack && volFill) {
         const handleVolControl = (vol) => {
-            if (isIOS) {
-                initIOSWebAudio();
-                if (audioCtx && audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
-            }
             setVolume(vol);
         };
 
@@ -247,12 +190,6 @@
 
     function changeVolume(delta) {
         if (!audio) return;
-        if (isIOS) {
-            initIOSWebAudio();
-            if (audioCtx && audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-        }
         setVolume(currentVolume + delta);
     }
 
