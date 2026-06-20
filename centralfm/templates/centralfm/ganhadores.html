@@ -74,6 +74,12 @@
         }
     }
 
+    .winners-grid-wrapper {
+        width: 100%;
+        overflow: hidden;
+        padding: 0 14px;
+    }
+
     .winners-grid {
         display: flex;
         justify-content: center;
@@ -81,7 +87,7 @@
         width: 100%;
         max-width: 100%;
         margin: 0 auto;
-        padding: 0 14px;
+        padding: 0;
     }
 
     .winner-card {
@@ -189,6 +195,10 @@
             padding: 16px 0 32px 0;
         }
 
+        .winners-grid-wrapper {
+            padding: 0 14px;
+        }
+
         .winners-grid {
             flex-wrap: nowrap;
             overflow-x: auto;
@@ -198,7 +208,7 @@
             scrollbar-width: none;
             justify-content: flex-start;
             gap: 10px;
-            padding: 0 14px;
+            padding: 0;
         }
 
         .winners-grid::-webkit-scrollbar {
@@ -226,7 +236,7 @@
             padding: 12px 0 24px 0;
         }
 
-        .winners-grid {
+        .winners-grid-wrapper {
             padding: 0 10px;
         }
 
@@ -236,9 +246,13 @@
     }
 
     @media (max-width: 480px) {
+        .winners-grid-wrapper {
+            padding: 0 8px;
+        }
+
         .winners-grid {
             gap: 8px;
-            padding: 0 8px;
+            padding: 0;
         }
 
         .winner-card {
@@ -260,15 +274,17 @@
         </div>
     </div>
 
-    <div class="winners-grid" id="winnersGrid">
-        {% for ganhador in ganhadores %}
-        <div class="winner-card">
-            {% if ganhador.foto %}
-            <img src="{{ ganhador.foto.url }}" alt="{{ ganhador.nome }}" class="winner-img">
-            {% endif %}
-        </div>
+    <div class="winners-grid-wrapper">
+        <div class="winners-grid" id="winnersGrid">
+            {% for ganhador in ganhadores %}
+            <div class="winner-card">
+                {% if ganhador.foto %}
+                <img src="{{ ganhador.foto.url }}" alt="{{ ganhador.nome }}" class="winner-img">
+                {% endif %}
+            </div>
 
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
 </section>
 
