@@ -1,0 +1,612 @@
+\documentclass[12pt, openright, oneside, a4paper, brazil]{ads-unipac-abntex2}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{indentfirst}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{amsmath, amssymb}
+\usepackage[alf]{abntex2cite}
+
+\graphicspath{{figuras/}{pictures/}{images/}{./}}
+
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+
+\autor{Gabriel Silva Santos}
+\data{2026}
+\orientador{Prof. Me. Fabricio Geraldo Araujo}
+\titulo{SITE DIGITAL PARA A RÁDIO CENTRAL FM DE MONTE ALEGRE DE MINAS UTILIZANDO PYTHON E DJANGO}
+
+% Configurações de links clicáveis e cores dos metadados
+\hypersetup{
+    pdfkeywords={Python}{Django}{Radiodifusão}{Design Responsivo}{SQLite},
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    filecolor=magenta,
+    urlcolor=blue,
+    bookmarksdepth=4
+}
+% Desativar citação de páginas nas referências (backref)
+\makeatletter
+\AtBeginDocument{
+  \@ifpackageloaded{backref}{
+    \renewcommand*{\backref}[1]{}
+    \renewcommand*{\backrefalt}[4]{}
+  }{}
+}
+\makeatother
+
+
+% Remover o ponto após os números dos capítulos e seções (Norma ABNT)
+\makeatletter
+\renewcommand{\@seccntformat}[1]{%
+  \csname the#1\endcsname\quad%
+}
+\makeatother
+
+\begin{document} 
+\frenchspacing 
+
+% ----------------------------------------------------------
+% ELEMENTOS PRÉ-TEXTUAIS
+% ----------------------------------------------------------
+\imprimircapa
+\imprimirfolhaderosto
+
+\begin{dedicatoria}
+  \vspace*{\fill}
+  \centering
+  \noindent
+  \textit{Dedico este trabalho a Deus, que me concedeu sabedoria e força. \\
+  Dedico também à minha família e a todos os professores, colegas e amigos que fizeram parte desta caminhada.}
+  \vspace*{\fill}
+\end{dedicatoria}
+
+\begin{agradecimentos}
+\noindent
+Agradeço a Deus, pela orientação e pelas oportunidades concedidas. Ao meu orientador Prof. Fabricio Araujo, pela condução dedicada, discussões enriquecedoras e apoio em cada etapa do projeto. Agradeço aos professores do curso por todo o conhecimento compartilhado. Sou grato à minha família, especialmente aos meus pais, Luís e minha mãe, que sempre acreditaram em mim e ofereceram suporte emocional, sem os quais este trabalho não seria possível. Agradeço também aos colegas de classe e amigos por suas sugestões valiosas e ajuda técnica mútua. Por fim, agradeço a todos que, de alguma forma, contribuíram direta ou indiretamente para a realização deste trabalho.
+\end{agradecimentos}
+
+\begin{resumo}
+Este trabalho apresenta o desenvolvimento de um novo portal digital para a Rádio Central FM de Monte Alegre de Minas utilizando a linguagem Python e o \textit{framework} Django. A solução foi projetada para resolver limitações técnicas e estruturais do sistema legado da emissora, automatizando o gerenciamento da grade horária e centralizando as interações promocionais por meio da integração direta com o WhatsApp. Adotando o design responsivo com foco web e compatibilidade mobile, associado a uma arquitetura relacional estruturada em SQLite, o sistema elimina processos manuais e garante independência operacional para a equipe da rádio. O resultado final demonstra um ambiente administrativo intuitivo baseado no padrão MVT (\textit{Model-View-Template}) que reflete as atualizações da programação em tempo real na interface pública, melhorando consideravelmente o engajamento com a comunidade regional do Triângulo Mineiro.
+
+\vspace{\onelineskip}
+    
+ \noindent
+ \textbf{Palavras-chave}: Python; Django; Radiodifusão; Design Responsivo; SQLite.
+\end{resumo}
+
+\begin{resumo}[Abstract]
+This work presents the development of a new digital portal for Rádio Central FM from Monte Alegre de Minas using the Python language and the Django framework. The solution was designed to solve technical and structural limitations of the station's legacy system, automating program schedule management and centralizing promotional interactions through direct integration with WhatsApp. Adopting a responsive design with web focus and mobile compatibility, along with a relational architecture structured in SQLite, the system eliminates manual processes and ensures operational independence for the radio crew. The final result demonstrates an intuitive administrative environment based on the MVT (Model-View-Template) pattern that reflects schedule updates in real-time on the public interface, considerably improving engagement with the regional community of Triângulo Mineiro. 
+
+\vspace{\onelineskip}
+    
+ \noindent
+ \textbf{Keywords}: Python; Django; Broadcasting; Responsive Design; SQLite.
+\end{resumo}
+
+\pdfbookmark[0]{\listfigurename}{lof}
+\listoffigures*
+\cleardoublepage
+
+\pdfbookmark[0]{\listtablename}{lot}
+\listoftables*
+\cleardoublepage
+
+\begin{siglas}
+  \item[IA] Inteligência Artificial
+  \item[MVT] \textit{Model-View-Template}
+  \item[MVC] \textit{Model-View-Controller}
+  \item[API] \textit{Application Programming Interface}
+  \item[UI] Interface de Usuário (\textit{User Interface})
+  \item[UX] Experiência do Usuário (\textit{User Experience})
+  \item[CRUD] \textit{Create, Read, Update, Delete}
+  \item[CSRF] \textit{Cross-Site Request Forgery}
+  \item[XSS] \textit{Cross-Site Scripting}
+  \item[ORM] \textit{Object-Relational Mapping}
+  \item[DER] Diagrama Entidade-Relacionamento
+  \item[UML] \textit{Unified Modeling Language}
+\end{siglas}
+
+\cleardoublepage
+
+% ----------------------------------------------------------
+% ELEMENTOS TEXTUAIS
+% ----------------------------------------------------------
+\textual
+
+% ----------------------------------------------------------
+% Introdução
+% ----------------------------------------------------------
+\chapter[Introdução]{Introdução}
+A trajetória da Rádio Central FM de Monte Alegre de Minas iniciou-se em 23 de dezembro de 1983, sob a denominação original de Rádio Central do Triângulo Mineiro Ltda. Desde sua fundação, a emissora consolidou-se como um veículo de comunicação fundamental para as populações urbana e rural, estendendo sua área de influência por municípios estratégicos como Prata, Tupaciguara, Uberlândia, Ituiutaba, Canápolis e Centralina. Com a expansão da rede mundial de computadores, o alcance da emissora transcendeu as fronteiras geográficas do Triângulo Mineiro, atingindo ouvintes em escala global por meio da transmissão via internet. Nesse cenário, a presença digital deixou de ser um recurso acessório para tornar-se o eixo central de uma estratégia voltada à manutenção da audiência e ao fortalecimento dos vínculos com a comunidade regional. No entanto, observou-se que o portal anteriormente utilizado pela rádio apresentava limitações técnicas e estruturais significativas, as quais comprometiam tanto a organização da grade de programação quanto a eficácia da divulgação de campanhas promocionais, evidenciando uma lacuna tecnológica que demandava intervenção.
+
+O projeto inseriu-se diretamente no paradigma da transformação digital da radiodifusão brasileira, contexto em que as emissoras locais necessitavam de ferramentas ágeis para integrar operação e interatividade. A migração constante do consumo de mídia para plataformas \textit{online} impôs à Rádio Central FM o desafio de aprimorar sua gestão interna, uma vez que sistemas legados dificultavam a organização de ativos e impactavam negativamente a produtividade da equipe administrativa e técnica. Surgiu, portanto, a iniciativa de aplicar a linguagem Python e o \textit{framework} Django na construção de uma solução para modernizar esse ambiente digital, otimizando processos como a gestão de promoções e da grade horária, au mesmo tempo em que se garantiu desempenho técnico e uma experiência satisfatória para o ouvinte final.
+
+A modernização do portal justifica-se pela urgência em alinhar a emissora às novas dinâmicas de consumo de mídia, propondo um fluxo de trabalho organizado e automatizado. Ao centralizar a gestão de promoções, locutores e programação em uma plataforma responsiva, a emissora obtém independência operacional e reduz a latência entre a produção de conteúdo e sua publicação efetiva. Além do viés estritamente técnico, o trabalho carrega uma relevante função social ao integrar o portal ao uso estratégico do WhatsApp, permitindo uma comunicação direta e instantânea que aproxima a rádio de sua comunidade em tempo real. Tal integração visa consolidar a interatividade em um canal já dominado pelo público, eliminando barreiras de acesso e fortalecendo a identidade local da marca Central FM no ambiente virtual.
+
+Para solucionar os problemas identificados e viabilizar as melhorias propostas, este estudo estabeleceu como objetivo geral o projeto e a implementação de um novo site para a Rádio Central FM, com ênfase em um sistema administrativo que otimize a gestão de promoções, locutores e programação. Como metas específicas para o alcance deste propósito, a pesquisa buscou realizar o levantamento de requisitos funcionais voltados à rotatividade da grade horária e aos destaques promocionais, além de modelar uma arquitetura de banco de dados capaz de suportar as constantes alterações de conteúdo sem perda de integridade. O desenvolvimento também contemplou a implementação de uma interface pública responsiva com foco na plataforma web e adaptabilidade para dispositivos móveis, assegurando que a transmissão ao vivo e as informações institucionais sejam acessíveis com fluidez em múltiplos tamanhos de tela, culminando na integração estratégica com mensageiros instantâneos para centralizar a participação do ouvinte em um canal consolidado.
+
+O projeto inseriu-se diretamente no paradigma da transformação digital da radiodifusão brasileira, um movimento que, segundo \citeonline{jenkins}, exige a adaptação das mídias tradicionais a um ecossistema de convergência. Nesse contexto, conforme aponta \citeonline{lopez}, as emissoras locais necessitavam de ferramentas ágeis para integrar operação e interatividade. A migração constante do consumo de mídia para plataformas \textit{online} impôs à Rádio Central FM o desafio de aprimorar sua gestão interna, uma vez que sistemas legados dificultavam a organização de ativos e impactavam negativamente a produtividade da equipe administrativa e técnica. Surgiu, portanto, a iniciativa de aplicar a linguagem Python e o \textit{framework} Django na construção de uma solução para modernizar esse ambiente digital, otimizando processos como a gestão de promoções e da grade horária, ao mesmo tempo em que se garantiu desempenho técnico e uma experiência satisfatória para o ouvinte final.
+
+A modernização do portal justificou-se pela urgência em alinhar a emissora às novas dinâmicas de consumo de áudio digital evidenciadas pela \citeonline{kantar2023}, propondo um fluxo de trabalho organizado e automatizado. Ao centralizar a gestão de promoções, locutores e programação em uma plataforma responsiva, a emissora obteve independência operacional e reduziu a latência entre a produção de conteúdo e sua publicação efetiva. Além do viés estritamente técnico, o trabalho carregou uma relevante função social ao integrar o portal ao uso estratégico do WhatsApp. De acordo com \citeonline{ferraretto}, a força do rádio regional reside na sua proximidade com a comunidade; logo, o uso de mensageiros instantâneos permitiu uma comunicação direta que aproximou a rádio de seu público em tempo real. Tal integração visou consolidar a interatividade em um canal já dominado pelos ouvintes, eliminando barreiras de acesso e fortalecendo a identidade local da marca Central FM no ambiente virtual.
+
+% ----------------------------------------------------------
+% Contextualização e Inovação
+% ----------------------------------------------------------
+\chapter[Contextualização e Inovação]{Contextualização e Inovação}
+O capítulo de Contextualização e Inovação tem como objetivo situar o presente trabalho no cenário atual da radiodifusão e das soluções digitais para emissoras de rádio, analisando como a proposta desenvolvida para a Rádio Central FM se posiciona frente às ferramentas disponíveis no mercado. Diferente de soluções genéricas, este projeto foca na especialização funcional, priorizando os pilares que sustentam a operação de uma rádio regional: a transmissão estável, a grade de programação dinâmica e o engajamento através de promoções.
+
+\section{Contextualização}
+O setor de radiodifusão brasileiro atravessa uma profunda transformação impulsionada pela convergência midiática e pelas novas dinâmicas de consumo de conteúdo. Segundo \citeonline{jenkins}, a cultura da convergência exige que as mídias tradicionais se adaptem a um ecossistema onde o conteúdo flui por múltiplas plataformas, exigindo interatividade e onipresença digital. Enquanto grandes redes nacionais adotam sistemas de gerenciamento complexos e onerosos para manter portais de notícias em tempo real, as rádios do interior demandam soluções que fortaleçam sua identidade local e a agilidade na entrega do áudio.
+
+Dados da \citeonline{kantar2023} indicam que o rádio mantém um alcance de cerca de 80\% da população brasileira, mas o consumo via dispositivos móveis e internet tem crescido exponencialmente. Para \citeonline{ferraretto}, o rádio regional encontra sua força na proximidade com a comunidade, e a tecnologia deve servir para ampliar esse vínculo, não para burocratizá-lo. Para a Rádio Central FM, o projeto posiciona-se como uma alternativa enxuta e personalizada, eliminando módulos que não condizem com a rotina operacional da emissora — como sistemas de notícias complexos — para focar no que gera maior valor para o ouvinte e anunciantes regionais.
+
+\section{Inovação e Diferenciais Técnicos}
+A solução proposta apresenta inovações técnicas e funcionais focadas na convergência digital, usabilidade e, sobretudo, na sustentabilidade operacional da emissora regional. Os principais diferenciais são detalhados a seguir:
+
+\begin{itemize}
+    \item Decisão estratégica de conteúdo (prevenção ao "site fantasma"): diferente de portais genéricos, o projeto optou por não implementar um módulo de notícias para evitar a sobrecarga editorial. Esta decisão visa prevenir o fenômeno do "site fantasma" — caracterizado por sites com seções de notícias desatualizadas que transmitem uma imagem de abandono — permitindo que a equipe foque exclusivamente na manutenção de uma grade de programação e promoções sempre atualizadas.
+    \item Mini-carrossel dinâmico: implementação de uma área de promoções na \textit{home page} dedicada à rotatividade de apoios culturais e sorteios de forma visualmente impactante. Este recurso permite que o administrador gerencie \textit{banners} de parceiros comerciais e campanhas temporárias com agilidade, maximizando o potencial comercial do portal.
+    \item Convergência via WhatsApp: uma decisão de \textit{design} substitui bancos de dados de mensagens proprietários por botões de ação direta para o WhatsApp. Isso centraliza a interatividade ininterrupta em um canal familiar ao ouvinte, reduzindo drasticamente custos de manutenção do servidor e aumentando a taxa de resposta e engajamento em tempo real.
+    \item Arquitetura web responsiva: o portal utiliza design responsivo focado no ambiente web com suporte mobile completo para garantir que o ouvinte tenha acesso imediato ao \textit{streaming} em qualquer dispositivo. Segundo \citeonline{wroblewski}, interfaces responsivas e otimizadas focam na simplicidade e na eficiência de acesso, eliminando as barreiras de \textit{download} de aplicativos nativos para o consumo casual da rádio.
+    \item Grade horária inteligente: implementação de detecção automática do programa "No Ar". O sistema utiliza lógica de \textit{backend} para identificar o locutor e o programa vigente com base no horário do servidor, atualizando a interface para o usuário sem necessidade de intervenção manual da equipe da rádio.
+\end{itemize}
+
+\section{EXEMPLOS DE APLICAÇÃO}
+O portal da Rádio Central FM foi projetado para operar em dois ambientes distintos e integrados, garantindo que a complexidade técnica do \textit{backend} seja traduzida em simplicidade para o usuário final. A aplicação dos conceitos de \textit{Model-View-Template} (MVT) do Django permitiu a criação de fluxos de trabalho que atendem tanto à demanda de consumo de áudio quanto à gestão operacional da emissora.
+
+% ----------------------------------------------------------
+% Referencial Teórico
+% ----------------------------------------------------------
+\chapter[Referencial Teórico]{Referencial Teórico}
+
+O capítulo de Referencial Teórico apresenta os fundamentos conceituais e tecnológicos que sustentam o desenvolvimento do portal digital da Rádio Central FM. A construção deste estudo baseia-se em princípios da engenharia de \textit{software}, arquitetura web, experiência do usuário, bancos de dados relacionais e transformação digital da radiodifusão. Além disso, são discutidos conceitos relacionados à segurança da informação e às metodologias modernas de desenvolvimento de aplicações web responsivas.
+
+\section{Engenharia de Software}
+
+A engenharia de \textit{software} consiste na aplicação de métodos sistemáticos, disciplinados e mensuráveis para o desenvolvimento, manutenção e evolução de sistemas computacionais. Para \citeonline{sommerville}, essa disciplina vai muito além da escrita de código, abrangendo também a definição de processos, análise de requisitos, modelagem, testes e manutenção. 
+
+Sistemas modernos exigem modularização, reutilização de componentes e organização estrutural. A aplicação de arquiteturas bem definidas é um fator crucial para reduzir falhas técnicas e garantir a facilidade de manutenção e a escalabilidade futura das aplicações \cite{pressman}.
+
+No presente projeto, os princípios da engenharia de \textit{software} foram aplicados na definição da arquitetura do portal, na separação das responsabilidades entre interface, lógica de negócio e persistência de dados, bem como na adoção de ferramentas de versionamento e controle de mudanças.
+
+\section{Desenvolvimento Web}
+
+O desenvolvimento web compreende o conjunto de técnicas utilizadas para a construção de aplicações acessadas via navegadores. Aplicações modernas nesse segmento devem priorizar o desempenho, a acessibilidade e a organização visual, especialmente para atender à demanda de ambientes de alto consumo móvel \cite{duckett}.
+
+Atualmente, sistemas web possuem papel estratégico para organizações que dependem de comunicação em tempo real, como as emissoras de rádio. Nesse cenário, a utilização de tecnologias robustas permite integrar o gerenciamento de conteúdo, a automação de processos e a interação com os usuários em uma única plataforma centralizada.
+
+Para o desenvolvimento do portal da Rádio Central FM, adotou-se uma estrutura baseada em tecnologias modernas de \textit{backend} e \textit{frontend}, permitindo a criação de uma aplicação dinâmica, responsiva e plenamente compatível com múltiplos dispositivos.
+
+\section{Arquitetura de Software}
+
+A arquitetura de \textit{software} define a estrutura organizacional de um sistema, especificando seus componentes e os relacionamentos estabelecidos entre eles. O rigor nessa definição influencia diretamente atributos críticos do produto final, tais como desempenho, segurança, escalabilidade e manutenibilidade \cite{bass}.
+
+Neste projeto, utilizou-se o padrão arquitetural MVT (\textit{Model-View-Template}), adotado nativamente pelo \textit{framework} Django. Essa arquitetura organiza a aplicação em três componentes principais:
+
+\begin{itemize}
+    \item \textit{Model}: responsável pela modelagem e manipulação dos dados da aplicação no banco de dados.
+    \item \textit{View}: encarregada do processamento das requisições web e da aplicação das regras de negócio.
+    \item \textit{Template}: atua como a camada visual, responsável pela apresentação formatada das informações ao usuário final.
+\end{itemize}
+
+A utilização desse padrão garantiu o baixo acoplamento e a alta coesão do código, facilitando a manutenção e a evolução futura do sistema.
+
+\section{Python como Linguagem Backend}
+
+Python é uma linguagem de programação de alto nível amplamente utilizada no ecossistema web devido à sua simplicidade sintática, produtividade e robustez. A adoção dessa tecnologia destaca-se por minimizar a complexidade do desenvolvimento, permitindo que o programador concentre seus esforços na resolução lógica do problema da aplicação \cite{matthees}.
+
+A linguagem possui ampla adoção em sistemas corporativos, análise de dados e automação. Sua comunidade ativa e vasta quantidade de bibliotecas tornam o ecossistema altamente produtivo para projetos ágeis.
+
+No contexto deste trabalho, Python foi utilizado como a principal linguagem de \textit{backend} do portal da Rádio Central FM, assumindo o processamento das lógicas de programação, o gerenciamento automático da grade horária, a autenticação administrativa e a integração segura com o banco de dados.
+
+\section{Framework Django}
+
+O Django é um \textit{framework} web desenvolvido em Python que segue o princípio de desenvolvimento rápido e seguro. Ele foi concebido, essencialmente, para simplificar a construção de aplicações complexas e orientadas a banco de dados, reduzindo a quantidade de código repetitivo \cite{django}.
+
+Uma de suas principais vantagens é a presença de funcionalidades nativas conhecidas como \textit{batteries-included}, voltadas à segurança e à gestão administrativa. Entre os recursos explorados neste projeto, destacam-se:
+
+\begin{itemize}
+    \item Sistema administrativo nativo gerado de forma autônoma;
+    \item Mapeamento objeto-relacional (ORM);
+    \item Proteção automática contra vulnerabilidades como CSRF e XSS;
+    \item Sistema flexível de roteamento de URLs;
+    \item Organização baseada no padrão MVT.
+\end{itemize}
+
+A escolha do Django ocorreu devido à sua estabilidade e alta produtividade, fatores que se alinham perfeitamente à necessidade de agilidade operacional da Rádio Central FM.
+
+\section{Banco de Dados Relacional}
+
+Os bancos de dados relacionais possuem papel fundamental no armazenamento estruturado de informações corporativas. A modelagem relacional é indispensável para garantir a integridade, a consistência e a segurança dos dados por meio de relacionamentos e restrições bem definidas entre as tabelas \cite{elmasri}.
+
+Neste projeto, a persistência de dados foi estruturada utilizando o sistema de gerenciamento de banco de dados SQLite. A escolha justifica-se pela sua arquitetura sem servidor (\textit{serverless}) e de configuração nula, o que simplifica o \textit{deploy} e a manutenção operacional da aplicação. Conforme apontado pela literatura, a utilização de bancos embarcados atende com excelência a sistemas web de médio porte, garantindo integridade transacional por meio de restrições relacionais clássicas.
+
+A modelagem do banco de dados foi projetada para organizar as seguintes frentes:
+
+\begin{itemize}
+    \item Dados cadastrais e perfis de locutores;
+    \item Horários e dias da grade de programação;
+    \item Informações institucionais dos programas da rádio;
+    \item Informações e controle de validade de campanhas promocionais.
+\end{itemize}
+
+O emprego do ORM do Django abstraiu a complexidade do banco de dados, permitindo a manipulação das informações através de objetos Python e mitigando a necessidade de comandos SQL executados manualmente.
+
+\section{Design Responsivo e Compatibilidade Multiplataforma}
+
+A abordagem de design responsivo estabelece que a interface do portal seja projetada com foco nas especificidades e na riqueza de recursos da plataforma web, mas adaptando-se de forma dinâmica e fluida para garantir excelente usabilidade em dispositivos móveis. Em vez de criar aplicativos nativos distintos ou limitar a visualização em desktop, o design responsivo reorganiza os elementos com base na resolução de tela do dispositivo, otimizando a disposição visual e o desempenho \cite{wroblewski}.
+
+O crescimento do acesso simultâneo a partir de desktops, tablets e smartphones exige que as aplicações modernas entreguem carregamentos rápidos e interfaces adaptáveis. Dessa forma, a responsividade torna-se fundamental para unificar a experiência do usuário em qualquer meio.
+
+No portal da Rádio Central FM, a estratégia de responsividade com foco web e compatibilidade móvel assegura:
+
+\begin{itemize}
+    \item Fluidez na navegação tanto em desktops quanto em telas móveis por toque;
+    \item Acesso imediato e ininterrupto ao \textit{player} de áudio em qualquer dispositivo;
+    \item Compatibilidade com uma ampla gama de resoluções e proporções de tela;
+    \item Carregamento rápido de imagens e layouts adaptados para diferentes conexões.
+\end{itemize}
+
+\section{Experiência do Usuário (UX)}
+
+A experiência do usuário (UX - \textit{User Experience}) engloba todos os aspectos da interação do usuário final com os serviços e produtos de uma empresa. Nesse contexto, \citeonline{garrett} defende que interfaces bem projetadas e intuitivas minimizam o atrito operacional e são diretamente responsáveis pelo aumento do engajamento do público.
+
+No planejamento do novo portal, priorizou-se uma navegação focada em utilidade. O sistema foi desenhado para reduzir a quantidade de cliques e o esforço cognitivo necessários até o início da reprodução do \textit{streaming} ao vivo. Adicionalmente, elementos específicos foram incorporados para elevar a qualidade da experiência, tais como:
+
+\begin{itemize}
+    \item \textit{Player} de áudio persistente, que não é interrompido durante a navegação;
+    \item \textit{Call-to-actions} (botões de ação) de acesso rápido;
+    \item Integração fluida e nativa com o aplicativo WhatsApp;
+    \item Disposição vertical e hierárquica da grade horária.
+\end{itemize}
+
+\section{Segurança em Aplicações Web}
+
+A segurança da informação é um pilar não negociável no desenvolvimento web. Vulnerabilidades como falsificação de solicitação entre sites (CSRF), injeção de \textit{scripts} (XSS) e injeção de SQL figuram historicamente entre as ameaças mais recorrentes e perigosas catalogadas pela indústria \cite{owasp}.
+
+Visando blindar o sistema contra tais ataques, o portal fez uso das defesas nativas habilitadas pelo \textit{framework} Django, que operam de forma transparente como \textit{middlewares}. Entre as camadas de proteção implementadas, sobressaem-se:
+
+\begin{itemize}
+    \item Validação obrigatória de \textit{tokens} contra ataques CSRF em formulários;
+    \item Higienização e escapamento automático de \textit{strings} contra XSS;
+    \item Parametrização intrínseca de consultas via ORM, impedindo SQL Injection;
+    \item Autenticação criptografada para acesso ao painel administrativo.
+\end{itemize}
+
+Essas garantias arquiteturais conferem ao painel da Rádio Central FM um ambiente confiável para a manipulação diária de dados sensíveis.
+
+\section{Radiodifusão Digital e Transformação Tecnológica}
+
+A transformação digital impactou de maneira irreversível as rotinas de produção e de distribuição do conteúdo radiofônico. A convergência midiática propiciou a simbiose entre o rádio, a internet e as redes sociais. Como elucida \citeonline[p.~30]{jenkins}, "a convergência não ocorre por meio de aparelhos, mas dentro dos cérebros dos consumidores", o que exige que o conteúdo seja fluido e interativo por múltiplas vias.
+
+Apesar da virtualização da comunicação, o rádio regional não perdeu sua força. Seu principal pilar de sustentação continua sendo o vínculo cultural e a proximidade com os acontecimentos da comunidade local \cite{ferraretto}. Contudo, o autor alerta que a incorporação de recursos digitais deixou de ser uma inovação e passou a ser uma necessidade de sobrevivência frente aos concorrentes globais.
+
+Atenta a essa transição, a Rádio Central FM busca solidificar sua presença \textit{online} mediante um portal alinhado às demandas do ouvinte contemporâneo. A adoção de atalhos diretos para o WhatsApp exemplifica essa estratégia, convertendo ouvintes passivos em participantes ativos que interagem com os locutores e campanhas em tempo real. Por fim, a democratização do \textit{streaming} de áudio liberta a emissora das limitações físicas das ondas de rádio (FM), expandindo o alcance do Triângulo Mineiro para fronteiras globais.
+
+\section{Considerações do Referencial Teórico}
+
+Os conceitos reunidos e discutidos ao longo deste capítulo atuam como a base científica e metodológica para a engenharia do portal da Rádio Central FM. O intercâmbio de teorias de arquitetura de \textit{software}, bancos de dados e experiência do usuário aplicado ao cenário prático da radiodifusão digital atesta que a modernização tecnológica de veículos de comunicação regionais é tanto viável quanto essencial. O alicerce teórico aqui estabelecido guiará as tomadas de decisões técnicas detalhadas nos capítulos metodológicos e de desenvolvimento subsequentes.
+
+% ----------------------------------------------------------
+% Metodologia
+% ----------------------------------------------------------
+\chapter[Metodologia]{Metodologia}
+O capítulo de Metodologia descreve os procedimentos e métodos científicos adotados para a condução do presente trabalho, fundamentando o rigor técnico e a validade dos resultados obtidos. A estruturação metodológica orientou todas as etapas de planejamento, desenvolvimento e implementação do portal da Rádio Central FM.
+
+\section{Introdução à Metodologia}
+Nesta seção, apresentam-se as etapas seguidas para a modernização do portal digital, com o propósito de estruturar um sistema administrativo eficaz. O foco reside na criação de uma solução que atenda às demandas operacionais reais da emissora, especificamente no que tange à gestão ágil de locutores, rotatividade da grade de programação e campanhas promocionais.
+
+\section{Tipo de Pesquisa}
+O presente estudo caracteriza-se como uma pesquisa aplicada, exploratória e descritiva, com abordagem qualitativa e prática. Segundo \citeonline{gil}, a pesquisa aplicada tem como objetivo gerar conhecimentos para aplicação prática dirigidos à solução de problemas específicos. De acordo com \citeonline{prodanov}, a pesquisa exploratória visa proporcionar maior familiaridade com o problema, tornando-o mais explícito, enquanto a descritiva busca detalhar as características de determinada realidade ou processo.
+
+Adicionalmente, o trabalho fundamenta-se nos princípios de \citeonline{wazlawick} para a pesquisa em Ciência da Computação, ao buscar o desenvolvimento de uma ferramenta tecnológica que responda a uma necessidade validada no mercado por meio de métodos sistemáticos de engenharia de \textit{software}.
+
+\section{Processo de Desenvolvimento de Software}
+Para a construção da solução, adotou-se o modelo de processo incremental, permitindo que as funcionalidades fossem concebidas, testadas e validadas em ciclos evolutivos. O desenvolvimento foi estruturado nas seguintes etapas:
+
+\begin{itemize}
+    \item Levantamento de requisitos: identificação das necessidades e fluxos operacionais diretamente com a equipe técnica e administrativa da rádio.
+    \item Modelagem e \textit{design}: estruturação relacional do banco de dados e prototipagem da interface pública e gerencial.
+    \item Implementação: codificação do sistema orientada pela arquitetura MVT (\textit{Model-View-Template}), garantindo a separação de responsabilidades entre interface, dados e lógica de negócio.
+    \item Versionamento: controle do código-fonte executado de forma contínua, garantindo a integridade e rastreabilidade da evolução do \textit{software}.
+    \item Testes e validação: avaliação de \textit{performance} da interface pública e verificação de estresse e integridade dos dados no painel administrativo.
+    \item Implantação (\textit{Deploy}): configuração da aplicação em servidor de hospedagem para disponibilização em ambiente de produção contínua.
+\end{itemize}
+
+\section{Procedimentos de Coleta de Dados}
+A coleta de dados foi conduzida por meio de análise documental do portal anterior da emissora, observação direta da rotina de locução e realização de entrevistas semiestruturadas com membros da equipe. Tais procedimentos permitiram a identificação ágil das prioridades funcionais, resultando na decisão estratégica de focar na automação da grade de programação e na integração nativa com o WhatsApp, em detrimento de módulos textuais secundários. A amostra consultada foi composta por quatro colaboradores estratégicos: dois locutores, um responsável técnico e um gestor administrativo.
+
+\section{Instrumentos de Pesquisa e Ambiente de Desenvolvimento}
+Para viabilizar a construção tecnológica e a coleta de dados, utilizou-se um conjunto específico de instrumentos e tecnologias. No âmbito da pesquisa metodológica, empregaram-se roteiros de entrevistas e \textit{checklists} de avaliação técnica de usabilidade.
+
+No que tange à engenharia do \textit{software}, o ecossistema de desenvolvimento foi centralizado na linguagem Python (versão 3.13) em conjunto com o \textit{framework} Django (versão 6.0.4). O ambiente de escrita e depuração de código foi o Visual Studio Code, enquanto o versionamento foi orquestrado via Git. Para a persistência estruturada de dados, adotou-se o SQLite tanto para o ambiente de desenvolvimento local quanto para o de produção, assegurando portabilidade, facilidade de backup e economia de recursos computacionais compatíveis com a escala de operação da rádio. Por fim, o desempenho da interface pública foi aferido por meio da ferramenta Google Lighthouse \cite{google2026}, garantindo o rigor no cumprimento dos requisitos de responsividade e desempenho da interface pública.
+
+\textual
+\section{Procedimentos de Análise de Dados}
+Os dados qualitativos advindos das entrevistas foram submetidos à análise de conteúdo para a identificação de padrões e gargalos nas rotinas da equipe. Já os dados técnicos, que incluem as métricas de tempo de resposta e a fluidez do carrossel promocional, foram avaliados de forma a mensurar e comprovar a eficiência operacional proporcionada pela nova plataforma arquitetada.
+
+\section{Limitações da Pesquisa}
+O estudo concentra-se exclusivamente na Rádio Central FM de Monte Alegre de Minas, o que implica que os resultados refletem as decisões de restrição de escopo e simplificação de conteúdo adotadas para atender às características organizacionais específicas desta emissora. Fatores externos, como a dependência do tempo de resposta de servidores de \textit{streaming} de terceiros e limitações de prazo, impactaram a realização de testes de carga exaustivos de audiência simultânea. Como desdobramento, sugere-se que trabalhos futuros explorem a integração de algoritmos de inteligência artificial para o cruzamento de métricas de engajamento no portal.
+
+% ----------------------------------------------------------
+% Desenvolvimento e Resultados
+% ----------------------------------------------------------
+\chapter[Desenvolvimento e Resultados]{Desenvolvimento e Resultados}
+
+Este capítulo apresenta detalhadamente o processo de desenvolvimento técnico do portal digital da Rádio Central FM, bem como os resultados alcançados após a implementação da solução. São descritas as etapas de levantamento de requisitos, modelagem estrutural, definição das tecnologias, implementação das funcionalidades e avaliação dos resultados obtidos pela emissora.
+
+O desenvolvimento do sistema foi conduzido com foco na modernização da presença digital da Rádio Central FM, priorizando desempenho, autonomia administrativa, estabilidade do \textit{streaming} e melhoria da experiência do usuário final.
+
+% ----------------------------------------------------------
+% PARTE 1
+% ----------------------------------------------------------
+
+\section{Levantamento e Análise de Requisitos}
+
+A especificação dos requisitos foi realizada através da observação da rotina operacional da emissora e de entrevistas semiestruturadas com funcionários das áreas técnica e administrativa. O objetivo principal foi compreender as limitações do sistema anterior e identificar funcionalidades essenciais para a modernização do portal.
+
+Durante a análise, observou-se que o sistema anteriormente utilizado apresentava dificuldades relacionadas à atualização manual da programação, baixa autonomia administrativa e ausência de integração eficiente com dispositivos móveis.
+
+Além disso, verificou-se que o principal interesse dos ouvintes estava concentrado em três fatores:
+
+\begin{itemize}
+    \item Facilidade de acesso ao áudio ao vivo;
+    \item Rapidez para visualizar a programação;
+    \item Comunicação direta via WhatsApp.
+\end{itemize}
+
+Com base nisso, os requisitos do sistema foram organizados em requisitos funcionais e não funcionais.
+
+\subsection{Requisitos Funcionais}
+
+\begin{itemize}
+    \item RF01 — Gestão da grade horária: o sistema deve permitir o cadastro, edição e remoção de programas e locutores através do painel administrativo.
+    \item RF02 — Streaming de áudio: o portal deve disponibilizar um \textit{player} persistente para reprodução contínua da transmissão ao vivo.
+    \item RF03 — Gestão de promoções: o sistema deve permitir o gerenciamento de \textit{banners} promocionais exibidos na página inicial.
+    \item RF04 — Exibição do programa ``No Ar'': o sistema deve identificar automaticamente o programa atual com base no horário do servidor.
+    \item RF05 — Integração com WhatsApp: o portal deve fornecer acesso rápido ao canal oficial da emissora para interação com ouvintes.
+\end{itemize}
+
+\subsection{Requisitos Não Funcionais}
+
+\begin{itemize}
+    \item RNF01 — Responsividade: o sistema deve ser compatível com dispositivos móveis, \textit{tablets} e computadores.
+    \item RNF02 — Segurança: o sistema deve utilizar mecanismos de proteção contra CSRF, XSS e \textit{SQL Injection}.
+    \item RNF03 — Desempenho: as páginas devem possuir carregamento rápido mesmo em conexões móveis.
+    \item RNF04 — Usabilidade: a navegação deve ser intuitiva e simplificada para usuários com pouca familiaridade tecnológica.
+\end{itemize}
+
+\section{Modelagem do Sistema}
+
+Após a definição dos requisitos, realizou-se a modelagem estrutural da aplicação utilizando diagramas UML \cite{omg2017} e modelagem relacional de banco de dados.
+
+\subsection{Caso de Uso — Diagrama UML}
+
+O Diagrama de Casos de Uso representa as interações entre os atores e o sistema, permitindo visualizar as principais funcionalidades disponibilizadas pelo portal.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[draft,width=0.75\linewidth]{caso_uso_macro.pdf}
+\caption[Diagrama de Casos de Uso]{Diagrama de Casos de Uso do sistema.}
+\label{fig:caso_uso_macro}
+\legend{Fonte: Dados do trabalho (2026).}
+\end{figure}
+
+O diagrama demonstra que o actor ``Ouvinte'' possui acesso às funcionalidades públicas do portal, como reprodução do áudio, visualização da programação e acesso ao WhatsApp. Já o ator ``Administrador'' possui permissões de gerenciamento da grade horária, locutores e promoções.
+
+\subsection{Diagrama Entidade-Relacionamento (DER)}
+
+O Diagrama Entidade-Relacionamento (DER) é um modelo conceitual de alto nível empregado no \textit{design} de bancos de dados estruturados. Proposto pioneiramente por \citeonline{chen1976}, o modelo tem como objetivo principal traduzir os requisitos de dados do mundo real para uma representação lógica, ilustrando graficamente como as entidades (objetos ou conceitos) se inter-relacionam dentro do domínio do sistema. De acordo com \citeonline{elmasri}, a elaboração prévia do DER é uma etapa metodológica indispensável na engenharia de \textit{software}, pois fornece uma visão arquitetural clara que ajuda a mitigar falhas de normalização, redundâncias estruturais e problemas de integridade referencial antes da criação das tabelas físicas no SGBD.
+
+Orientada por esses preceitos acadêmicos, a estrutura do banco de dados do portal foi modelada utilizando o paradigma relacional, visando garantir a integridade transacional e a organização das informações operacionais da rádio.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[draft,width=0.75\linewidth]{der_centralfm.pdf}
+\caption[Diagrama Entidade-Relacionamento]{Diagrama Entidade-Relacionamento do banco de dados.}
+\label{fig:der_banco}
+\legend{Fonte: Dados do trabalho (2026).}
+\end{figure}
+
+A modelagem foi construída para permitir:
+
+\begin{itemize}
+    \item O relacionamento íntegro entre locutores e programas;
+    \item O controle preciso da grade horária e seus turnos;
+    \item O gerenciamento de \textit{banners} promocionais associados a campanhas;
+    \item As atualizações e consultas em tempo real da programação.
+\end{itemize}
+
+Essa estrutura relacional reduziu redundâncias e facilitou a performance das consultas dinâmicas exigidas pela interface pública da aplicação.
+
+\section{Arquitetura da Aplicação}
+
+A aplicação foi desenvolvida utilizando a arquitetura MVT (\textit{Model-View-Template}) do \textit{framework} Django. Essa estrutura organizacional permitiu separar a lógica de negócio, o acesso aos dados e a interface visual.
+
+A divisão da aplicação ocorreu da seguinte forma:
+
+\begin{itemize}
+    \item \textit{Model}: responsável pela modelagem estrutural das tabelas do banco de dados.
+    \item \textit{View}: responsável pelo processamento das regras de negócio e intermediação de requisições.
+    \item \textit{Template}: responsável pela renderização visual final das páginas HTML exibidas ao usuário.
+\end{itemize}
+
+Essa organização garantiu o baixo acoplamento e facilitou a manutenção do sistema, permitindo maior escalabilidade para implementações futuras.
+
+\section{Tecnologias Utilizadas}
+
+Nesta seção, são apresentadas as escolhas tecnológicas aplicadas ao desenvolvimento do portal, delineando seu contexto histórico e justificando sua adoção no projeto.
+
+\subsection{Python}
+
+A linguagem Python, concebida no final da década de 1980 por Guido van Rossum e lançada oficialmente em 1991, é uma linguagem de programação de alto nível, interpretada e de propósito geral. Historicamente, seu desenvolvimento foi norteado pelo princípio da legibilidade de código e pela facilidade de manutenção de \textit{sistemas} complexos \cite{matthees}. No escopo deste projeto, a versão 3.13 foi empregada como a tecnologia central de \textit{backend}. Sua adoção justifica-se pela alta produtividade e solidez no desenvolvimento \textit{web}, sendo a linguagem responsável pela orquestração da lógica de negócio, pelo mapeamento das regras de programação da emissora e pela comunicação segura com o banco de dados.
+
+\subsection{Django}
+
+O Django é um \textit{framework web} de alto nível, escrito integralmente em Python. Sua origem remonta a 2003, quando foi desenvolvido no ambiente de redação do jornal estadunidense \textit{Lawrence Journal-World} para gerenciar o conteúdo jornalístico sob prazos curtos e rotinas aceleradas, sendo disponibilizado como código aberto no ano de 2005 \cite{django}. Essa herança histórica moldou o sistema para priorizar a criação rápida de aplicações robustas. A versão 6.0.4 do \textit{framework} foi selecionada para o projeto por oferecer uma arquitetura madura e com segurança nativa. Sua adoção permitiu acelerar o ciclo de desenvolvimento da rádio mediante a utilização de recursos integrados essenciais, tais como:
+
+\begin{itemize}
+    \item Painel administrativo gerado dinamicamente;
+    \item Mapeamento objeto-relacional (ORM) avançado;
+    \item Sistema nativo de autenticação de usuários;
+    \item \textit{Middlewares} de proteção contra vulnerabilidades intrusivas;
+    \item Estrutura baseada em aplicações isoladas e reutilizáveis.
+\end{itemize}
+
+\subsection{SQLite}
+
+O SQLite é um sistema de gerenciamento de banco de dados relacional embarcado e sem servidor (\textit{serverless}). Segundo \citeonline{elmasri}, bancos de dados embarcados caracterizam-se por sua leveza e execução direta no próprio espaço de endereçamento da aplicação, dispensando a instalação e a configuração de servidores dedicados. A escolha do SQLite no projeto justifica-se pela sua integração nativa com o \textit{framework} Django, portabilidade e eficiência na persistência de dados, sendo o responsável por armazenar com segurança as informações de locutores, grade horária, promoções e ganhadores da emissora.
+
+\subsection{HTML, CSS e JavaScript}
+
+As tecnologias HTML, CSS e JavaScript formam a tríade basilar do desenvolvimento \textit{web} no lado do cliente (\textit{frontend}). Historicamente, o HTML (\textit{HyperText Markup Language}) foi idealizado por Tim Berners-Lee em 1990 para estruturar documentos na rede; o CSS (\textit{Cascading Style Sheets}) foi proposto por Håkon Wium Lie em 1994 para separar a apresentação visual do conteúdo; e o JavaScript foi concebido por Brendan Eich em 1995 para conferir comportamento e interatividade às páginas \cite{duckett}. Tendo em vista a maturidade e universalidade dessas tecnologias, as versões HTML5, CSS3 e o JavaScript moderno compuseram a base da construção da interface pública do portal. Justifica-se a utilização dessas ferramentas pelos seus papéis específicos: o HTML atuou na estruturação semântica, o CSS assumiu a responsabilidade pela estilização visual responsiva e o JavaScript gerenciou as interações dinâmicas do usuário, viabilizando o funcionamento ininterrupto do \textit{player} de áudio no navegador.
+
+\section{Desenvolvimento da Interface Pública}
+
+A concepção da interface pública seguiu as diretrizes do design responsivo, com foco na experiência web integrada a uma total adaptabilidade para dispositivos móveis. O \textit{layout} foi refinado para oferecer simplicidade visual, baixo custo de carregamento em redes celulares e atalhos imediatos para o conteúdo central da rádio.
+
+Entre os principais componentes de interface implementados, destacam-se:
+
+\begin{itemize}
+    \item \textit{Player} de áudio persistente em barra inferior;
+    \item Exibição automatizada da atração correspondente ao bloco "No Ar";
+    \item Carrossel rotativo e otimizado para promoções e anunciantes;
+    \item Botões de interação mapeados via \textit{Deep Linking} para o WhatsApp;
+    \item Grade horária disposta verticalmente para facilitar a rolagem móvel;
+    \item Comportamento responsivo fluído em todas as larguras de tela.
+\end{itemize}
+
+A identidade visual da Rádio Central FM foi rigorosamente respeitada, com o uso proeminente dos tons institucionais verde bandeira e amarelo ouro.
+
+\section{Desenvolvimento do Painel Administrativo}
+
+O ambiente gerencial do sistema foi erguido a partir do módulo nativo Django Admin. Essa abordagem técnica outorgou à equipe da rádio a capacidade de executar de forma autônoma:
+
+\begin{itemize}
+    \item O cadastro e a suspensão de locutores e horários;
+    \item A alteração imediata das diretrizes da grade de programação;
+    \item A submissão ágil de arquivos de imagem para as campanhas promocionais;
+    \item A alternância do \textit{status} de visibilidade de parceiros no portal.
+\end{itemize}
+
+A adoção do painel pré-fabricado pelo \textit{framework} encurtou consideravelmente os prazos de desenvolvimento e conferiu independência operacional absoluta à emissora.
+
+% ----------------------------------------------------------
+% PARTE 2
+% ----------------------------------------------------------
+\newpage
+\section*{Resultados}
+
+Após a implementação técnica do sistema, procedeu-se à etapa de testes funcionais e operacionais para atestar a conformidade e o desempenho da solução arquitetada.
+
+\section{Telas do Sistema e Interface do Usuário}
+
+Esta seção apresenta o detalhamento visual e funcional das páginas públicas e gerenciais desenvolvidas para o portal da Rádio Central FM, ilustrando como o design responsivo com foco web e compatibilidade mobile, associado ao painel de controle administrativo, opera na prática.
+
+\subsection{Interface Pública (Visão do Ouvinte)}
+
+A página inicial pública (\texttt{home.html}) foi projetada com foco principal no ambiente web de computadores, incorporando uma arquitetura responsiva que se adapta de forma fluida a dispositivos móveis. A disposição dos módulos baseia-se nas cores institucionais verde bandeira e amarelo ouro, prezando pela harmonia visual, contraste e legibilidade tanto em telas de alta resolução quanto em displays compactos.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{home_page_desktop.png}
+\caption[Página Inicial do Portal em Ambiente Web]{Visualização da página inicial do portal em ambiente desktop, destacando o layout responsivo e o player de áudio persistente.}
+\label{fig:home_desktop}
+\legend{Fonte: Dados do trabalho (2026).}
+\end{figure}
+
+Como ilustrado na Figura~\ref{fig:home_desktop}, a tela de abertura exibe em destaque o logotipo da emissora e disponibiliza botões de atalho parametrizados para o download dos aplicativos nativos para Android (Google Play) e iOS (App Store). A porção principal da interface destaca o player de áudio persistente na cor amarela, responsável por gerenciar os estados de áudio ao conectar-se diretamente ao servidor de streaming da Brasil Stream (\texttt{https://8036.brasilstream.com.br/stream}). Embora otimizado para o consumo web em navegadores de desktop, todo o arranjo visual se reorganiza automaticamente em formatos compactos para assegurar que a experiência móvel seja igualmente intuitiva.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.60\linewidth]{modulo_no_ar.png}
+\caption[Bloco Dinâmico "No Ar" e Grade Horária]{Detalhamento do bloco dinâmico contendo a atração vigente, locutor e cronograma.}
+\label{fig:no_ar}
+\legend{Fonte: Dados do trabalho (2026).}
+\end{figure}
+
+O Bloco ``No Ar'' (Figura~\ref{fig:no_ar}) apresenta o programa ativo naquele instante. A lógica de \textit{backend} do Django detecta o programa com base no horário do servidor e atualiza os elementos visuais na tela: a foto ou o GIF animado do locutor, o título da atração e a faixa horária programada. Um script JavaScript gerencia a atualização assíncrona periódica a cada 60 segundos por meio de requisições AJAX, de modo a refletir a alteração de locutores sem exigir que o usuário atualize a página inteira manualmente. Abaixo desse bloco, são exibidos os metadados da música em reprodução (título da música e artista), capturados em tempo real da API da rádio.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.60\linewidth]{carrossel_ganhadores.png}
+\caption[Carrossel de Promoções e Exibição de Ganhadores]{Exibição da rotatividade do carrossel promocional e da listagem de ouvintes premiados.}
+\label{fig:promocoes_ganhadores}
+\legend{Fonte: Dados do trabalho (2026).}
+\end{figure}
+
+O Carrossel de Promoções (Figura~\ref{fig:promocoes_ganhadores}) expõe em transição lateral os \textit{banners} de sorteios e apoios culturais de patrocinadores regionais. Cada card promocional contém um botão de ação direta integrado via link de WhatsApp parametrizado (usando \textit{Deep Linking} com formato \texttt{wa.me}), que redireciona o ouvinte para o aplicativo de mensagens com um texto de participação predefinido (ex.: ``Quero participar da promoção [Título]''). Logo abaixo do carrossel, o portal exibe o módulo de ouvintes premiados da semana, listando fotos e nomes dos ganhadores de sorteios passados, garantindo a transparência das promoções.
+
+\subsection{Painel Administrativo (Visão do Gestor/Locutor)}
+
+O ambiente gerencial do site foi customizado com base no Django Admin estendido com a biblioteca Django Jazzmin. Esta extensão fornece um visual profissional e limpo baseado no Bootstrap 4 e ícones FontAwesome, garantindo responsividade ao painel.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{jazzmin_dashboard.png}
+\caption[Painel de Controle Geral do Django Admin com Tema Jazzmin]{Página inicial da administração do portal, com atalhos e contadores de registros cadastrados.}
+\label{fig:admin_dashboard}
+\legend{Fonte: Dados do trabalho (2026).}
+\end{figure}
+
+A tela inicial do painel de controle (Figura~\ref{fig:admin_dashboard}) funciona como centro de comando geral, fornecendo estatísticas rápidas sobre o número de promoções ativas, locutores de plantão, programas agendados e lista de ganhadores cadastrados no banco de dados SQLite.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\linewidth]{jazzmin_programa_form.png}
+\caption[Formulário de Cadastro e Escala de Grade Horária]{Formulário administrativo de edição de programas, destacando a seleção de horários e locutores.}
+\label{fig:admin_programa}
+\legend{Fonte: Dados do trabalho (2026).}
+\end{figure}
+
+O formulário de cadastro de programas (Figura~\ref{fig:admin_programa}) simplifica o gerenciamento da grade. Ele valida a integridade relacional do SQLite, permitindo associar cada programa a um locutor titular e um locutor substituto por meio de caixas de seleção. A seleção do locutor substituto serve como um gatilho automático: caso esteja preenchido, o \textit{backend} prioriza a exibição deste no bloco ``No Ar'' do portal público, cobrindo escalas de férias, atestados ou substituições pontuais sem a necessidade de intervenção manual da equipe no código-fonte. O gerenciamento de promoções e locutores também utiliza painéis similares para inserção e remoção ágil de registros.
+
+\section{Testes de Performance e Responsividade}
+
+Na fase de auditoria final, a ferramenta Google Lighthouse \cite{google2026} foi empregada para avaliar as métricas de desempenho técnico da interface pública, simulando acessos sob condições reais de redes móveis (3G e 4G) e desktops. Devido à concepção estrutural focada em simplicidade e ao baixo acoplamento de arquivos de estilo, os resultados obtidos foram altamente satisfatórios:
+\begin{itemize}
+    \item \textbf{Performance}: O portal registrou pontuações superiores a 90/100, motivadas pelo rápido tempo de carregamento inicial (\textit{First Contentful Paint}) e pela otimização na renderização do \textit{streaming} de áudio;
+    \item \textbf{Acessibilidade}: A organização semântica do HTML5 com o uso correto das tags estruturais garantiu a navegabilidade por leitores de tela e comandos de teclado;
+    \item \textbf{Melhores Práticas}: A validação do uso do protocolo HTTPS para a transmissão e a higienização de cabeçalhos estáticos minimizou riscos de segurança;
+    \item \textbf{SEO (Otimização para Motores de Busca)}: As metatags e descrições personalizadas configuradas dinamicamente no Django asseguraram excelente indexação.
+\end{itemize}
+
+O comportamento responsivo foi validado em emuladores integrados e em testes práticos em dispositivos móveis com larguras de tela de 320px (como iPhone SE) a 428px (como iPhone 13 Pro Max). O \textit{player} persistente na base do navegador permaneceu fixo em todas as larguras, assegurando a continuidade de reprodução do áudio durante a rolagem vertical. O mini-carrossel de promoções adaptou-se dinamicamente, mantendo a integridade dos \textit{banners} e a facilidade de clique no botão do WhatsApp em telas pequenas.
+
+% ----------------------------------------------------------
+% Conclusão
+% ----------------------------------------------------------
+\chapter{Considerações Finais e Trabalhos Futuros}
+
+Este trabalho cumpriu com êxito os objetivos estipulados para o projeto e a implementação da nova presença digital da Rádio Central FM de Monte Alegre de Minas. O portal desenvolvido soluciona limitações históricas do sistema legado e simplifica a operação de comunicação diária da rádio.
+
+A escolha da linguagem Python e da versão 6.0.4 do \textit{framework} Django comprovou ser altamente produtiva. A arquitetura MVT, aliada ao ORM e ao simplicidade operacional do SQLite, garantiu a integridade referencial dos dados e eliminou tarefas manuais repetitivas, como a edição de arquivos estáticos de programação no código-fonte. A automação da grade horária baseada no horário do servidor e o gerenciamento intuitivo de locutores e promoções entregaram independência operacional completa aos colaboradores da emissora.
+
+Sob a perspectiva da interface pública, a arquitetura responsiva atendeu à necessidade de acessos fluidos tanto em computadores quanto em dispositivos móveis, adaptando-se de forma dinâmica às origens de tráfego. A integração via links diretos de WhatsApp centralizou as interações promocionais de forma a minimizar barreiras tecnológicas para o ouvinte comum, substituindo formulários analógicos por comunicação digital dinâmica em tempo real.
+
+Como desdobramento para trabalhos futuros, recomenda-se:
+\begin{itemize}
+    \item O desenvolvimento de um painel de estatísticas no Django Admin para mensurar o volume de cliques nas promoções e nos links das lojas virtuais de aplicativos;
+    \item O integração de um repositório de áudios sob demanda (\textit{Podcasts}) para retransmissão do conteúdo de jornalismo local e entrevistas comerciais;
+    \item O uso de técnicas de Inteligência Artificial para analisar as preferências das mensagens dos ouvintes enviadas via WhatsApp para compor automaticamente as \textit{playlists} musicais da emissora.
+\end{itemize}
+
+% ----------------------------------------------------------
+% ELEMENTOS PÓS-TEXTUAIS
+% ----------------------------------------------------------
+\postextual
+
+% Força a exibição de todas as referências do arquivo .bib
+\nocite{*}
+
+\bibliography{abntex2-modelo-references}
+
+\end{document}
