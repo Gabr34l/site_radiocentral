@@ -4,6 +4,7 @@
         background: transparent;
         padding: 24px 14px 48px 14px;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
     }
 
     .winners-header {
@@ -15,15 +16,6 @@
         padding-bottom: 24px;
         margin-bottom: 32px;
         gap: 6px;
-    }
-
-    .winners-prefix {
-        font-size: 11px;
-        font-weight: 800;
-        color: #facc15;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        margin-bottom: 4px;
     }
 
     .winners-title {
@@ -250,7 +242,6 @@
 
 <section class="winners-section">
     <div class="winners-header">
-        <span class="winners-prefix">PROMOÇÕES CENTRAL FM</span>
         <h2 class="winners-title">Ganhadores da Semana</h2>
         <span class="winners-date">
             {{ ganhadores.0.data_inicio_semana|date:"d" }} – {{ ganhadores.0.data_fim_semana|date:"d" }} {{ ganhadores.0.data_fim_semana|date:"M Y"|upper }}
