@@ -2,14 +2,13 @@
 <style>
     .winners-section {
         background: #fff;
-        padding: 24px 32px 60px 32px;
+        padding: 24px 14px 48px 14px;
         border-top: 1px solid #e8e8e8;
     }
 
-
     .winners-header {
         text-align: center;
-        margin-bottom: 40px;
+        margin-bottom: 24px;
     }
 
     .winners-title {
@@ -22,7 +21,6 @@
         text-transform: none;
     }
 
-
     .winners-subtitle {
         font-size: 14px;
         color: #888;
@@ -32,20 +30,19 @@
     }
 
     .winners-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 14px;
         width: 100%;
-        max-width: 1280px;
-        padding: 0 2vw;
+        max-width: 1200px;
         margin: 0 auto;
+        padding: 0;
     }
 
-
     .winner-card {
+        flex: 0 1 270px;
         aspect-ratio: 4/5;
         border-radius: 12px;
-
         overflow: hidden;
         position: relative;
         cursor: pointer;
@@ -68,8 +65,8 @@
     }
 
     .winner-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        transform: translateY(-6px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     }
 
     .winner-img {
@@ -138,19 +135,55 @@
     }
 
     @media (max-width: 960px) {
+        .winners-section {
+            padding: 16px 14px 32px 14px;
+        }
+
         .winners-grid {
-            grid-template-columns: repeat(3, 1fr);
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            justify-content: flex-start;
+            gap: 10px;
+        }
+
+        .winners-grid::-webkit-scrollbar {
+            display: none;
+        }
+
+        .winner-card {
+            flex: 0 0 calc((100% - 10px) / 2);
+            min-width: calc((100% - 10px) / 2);
+            scroll-snap-align: start;
+        }
+
+        .winner-card:hover {
+            transform: none;
+            box-shadow: none;
         }
     }
 
     @media (max-width: 640px) {
-        .winners-grid {
-            grid-template-columns: repeat(2, 1fr);
-            padding: 0 16px;
+        .winners-section {
+            padding: 12px 10px 24px 10px;
         }
 
         .winners-title {
             font-size: 28px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .winners-grid {
+            gap: 8px;
+        }
+
+        .winner-card {
+            flex: 0 0 calc((100% - 8px) / 2);
+            min-width: calc((100% - 8px) / 2);
         }
     }
 </style>
