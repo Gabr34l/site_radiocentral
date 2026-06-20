@@ -2,7 +2,7 @@
 <style>
     .winners-section {
         background: transparent;
-        padding: 24px 0 48px 0;
+        padding: 12px 0 48px 0;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
     }
@@ -13,10 +13,10 @@
         align-items: center;
         text-align: center;
         border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
-        padding-bottom: 24px;
+        padding-bottom: 20px;
         padding-left: 14px;
         padding-right: 14px;
-        margin-bottom: 32px;
+        margin-bottom: 24px;
         gap: 6px;
     }
 
@@ -64,8 +64,8 @@
 
     @media (max-width: 768px) {
         .winners-header {
-            padding-bottom: 18px;
-            margin-bottom: 24px;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .winners-title {
@@ -82,17 +82,28 @@
 
     .winners-grid {
         display: flex;
-        justify-content: center;
         gap: 14px;
         width: 100%;
         max-width: 100%;
         margin: 0 auto;
         padding: 0;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        scroll-snap-type: x mandatory;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        justify-content: flex-start;
+    }
+
+    .winners-grid::-webkit-scrollbar {
+        display: none;
     }
 
     .winner-card {
-        flex: 1 1 270px;
-        max-width: 400px;
+        flex: 0 0 auto;
+        flex-shrink: 0;
+        scroll-snap-align: start;
+        width: calc((100% - (3 * 14px)) / 4);
         aspect-ratio: 4/5;
         border-radius: 12px;
         overflow: hidden;
@@ -102,10 +113,6 @@
         background: linear-gradient(135deg, #0d5c24 0%, #0a3d1a 100%);
         border: 2.5px solid transparent;
         background-clip: padding-box;
-    }
-
-    .winner-card[data-clone="true"] {
-        display: none;
     }
 
     .winner-card::before {
@@ -190,9 +197,21 @@
         font-weight: 500;
     }
 
+    @media (max-width: 1440px) {
+        .winner-card {
+            width: calc((100% - (2 * 14px)) / 3);
+        }
+    }
+
+    @media (max-width: 1100px) {
+        .winner-card {
+            width: calc((100% - 14px) / 2);
+        }
+    }
+
     @media (max-width: 960px) {
         .winners-section {
-            padding: 16px 0 32px 0;
+            padding: 10px 0 32px 0;
         }
 
         .winners-grid-wrapper {
@@ -200,29 +219,11 @@
         }
 
         .winners-grid {
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            scroll-snap-type: x mandatory;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-            justify-content: flex-start;
             gap: 10px;
-            padding: 0;
-        }
-
-        .winners-grid::-webkit-scrollbar {
-            display: none;
         }
 
         .winner-card {
-            flex: 0 0 calc((100% - 10px) / 2);
-            min-width: calc((100% - 10px) / 2);
-            scroll-snap-align: start;
-        }
-
-        .winner-card[data-clone="true"] {
-            display: block;
+            width: calc((100% - 10px) / 2);
         }
 
         .winner-card:hover {
@@ -233,7 +234,7 @@
 
     @media (max-width: 640px) {
         .winners-section {
-            padding: 12px 0 24px 0;
+            padding: 8px 0 24px 0;
         }
 
         .winners-grid-wrapper {
@@ -252,12 +253,10 @@
 
         .winners-grid {
             gap: 8px;
-            padding: 0;
         }
 
         .winner-card {
-            flex: 0 0 calc((100% - 8px) / 2);
-            min-width: calc((100% - 8px) / 2);
+            width: calc((100% - 8px) / 2);
         }
     }
 </style>
@@ -313,7 +312,6 @@
             let isScrolling = false;
 
             setInterval(() => {
-                if (window.innerWidth > 960) return;
                 if (isScrolling) return;
 
                 const step = cardStep();
