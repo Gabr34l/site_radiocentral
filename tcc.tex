@@ -604,9 +604,173 @@ Como desdobramento para trabalhos futuros, recomenda-se:
 % ----------------------------------------------------------
 \postextual
 
-% Força a exibição de todas as referências do arquivo .bib
-\nocite{*}
-
 \bibliography{abntex2-modelo-references}
 
+%% Referências bibliográficas
+% ----------------------------------------------------------
+
+\begin{comment}
+\bibitem{bass} BASS, L.; CLEMENTS, P.; KAZMAN, R. \textbf{Software Architecture in Practice}. 3. ed. Addison-Wesley Professional, 2013.
+
+\bibitem{chen1976} CHEN, P. P. \textbf{The Entity-Relationship Model: A Basis for the Enterprise View of Data}. ACM Transactions on Database Systems, v. 1, n. 1, p. 9-36, 1976.
+
+\bibitem{django} DJANGO SOFTWARE FOUNDATION. \textbf{Django Documentation}. Versão 6.0, 2026. Disponível em: <https://docs.djangoproject.com/>. Acesso em: 11 jun. 2026.
+
+\bibitem{duckett} DUCKETT, J. \textbf{HTML \& CSS: design and build websites}. Indianapolis: John Wiley \& Sons, 2011.
+
+\bibitem{elmasri} ELMASRI, R.; NAVATHE, S. B. \textbf{Sistemas de Banco de Dados}. 7. ed. São Paulo: Pearson Education do Brasil, 2019.
+
+\bibitem{ferraretto} FERRARETTO, L. A. \textbf{Rádio: teoria e prática}. 2. ed. São Paulo: Paulus, 2014.
+
+\bibitem{garrett} GARRETT, J. J. \textbf{The Elements of User Experience: user-centered design for the web and beyond}. 2. ed. Berkeley: New Riders, 2011.
+
+\bibitem{gil} GIL, A. C. \textbf{Como Elaborar Projetos de Pesquisa}. 7. ed. São Paulo: Atlas, 2022.
+
+\bibitem{google} GOOGLE. \textbf{Lighthouse Overview}, 2026. Disponível em: <https://developer.chrome.com/docs/lighthouse/>. Acesso em: 11 jun. 2026.
+
+\bibitem{jenkins} JENKINS, H. \textbf{Cultura da Convergência}. 2. ed. São Paulo: Aleph, 2009.
+
+\bibitem{kantar} KANTAR IBOPE MEDIA. \textbf{Inside Áudio 2023}. São Paulo: Kantar IBOPE Media, 2023. Disponível em: <https://www.kantaribopemedia.com>. Acesso em: 11 jun. 2026.
+
+\bibitem{lopez} LOPEZ, D. \textbf{Radiofonia e Convergência}. Porto Alegre: Editora UFRGS, 2018.
+
+\bibitem{matthees} MATTHES, E. \textbf{Curso Intensivo de Python: uma introdução prática e baseada em projetos à programação}. 3. ed. São Paulo: Novatec, 2023.
+
+\bibitem{omg} OMG. \textbf{Unified Modeling Language (UML)}. Version 2.5.1. Object Management Group, 1997. Disponível em: <https://www.omg.org/spec/UML/>. Acesso em: 11 jun. 2026.
+
+\bibitem{owasp} OWASP FOUNDATION. \textbf{OWASP Top 10: The Ten Most Critical Web Application Security Risks}, 2026. Disponível em: <https://owasp.org/www-project-top-ten/>. Acesso em: 11 jun. 2026.
+
+\bibitem{pressman} PRESSMAN, R. S.; MAXIM, B. R. \textbf{Engenharia de Software: uma abordagem profissional}. 8. ed. Porto Alegre: AMGH, 2016.
+
+\bibitem{prodanov} PRODANOV, C. C.; FREITAS, E. C. \textbf{Metodologia do Trabalho Científico: métodos e técnicas da pesquisa e do trabalho acadêmico}. 2. ed. Novo Hamburgo: Feevale, 2013.
+
+\bibitem{reenskaug1979} REENSKAUG, T. \textbf{Models - Views - Controllers}. Xerox Palo Alto Research Center, 1979.
+
+\bibitem{sommerville} SOMMERVILLE, I. \textbf{Engenharia de Software}. 10. ed. São Paulo: Pearson Education do Brasil, 2019.
+
+\bibitem{wazlawick} WAZLAWICK, R. S. \textbf{Metodologia de Pesquisa para Ciência da Computação}. 2. ed. Rio de Janeiro: Elsevier, 2014.
+
+\bibitem{wroblewski} WROBLEWSKI, L. \textbf{Mobile First}. New York: A Book Apart, 2011.
+
+\end{comment}
+
+% ---
+% Início dos apêndices
+% ---
+\begin{apendicesenv}
+
+\chapter{\textit{Logs} de Depuração e Anotações de Processo}
+Este apêndice é dedicado à apresentação de registros e anotações provenientes do processo de depuração (\textit{debugging}) e desenvolvimento do portal da Rádio Central FM. Embora o corpo principal deste trabalho se concentre na metodologia, arquitetura MVT e resultados visuais, esta seção oferece uma visão detalhada dos \textit{logs} gerados via terminal e console de depuração do Django. Estes registros foram cruciais para a identificação de anomalias lógicas, validação do fluxo de dados das consultas à grade horária e o refinamento do processo de normalização de metadados de transmissão.
+
+A inclusão desses \textit{logs} serve para documentar o rigor técnico empregado na construção do \textit{software}, comprovando a capacidade de diagnosticar desafios específicos de persistência local (\textit{SQLite}) e de consumo de APIs externas. Eles complementam o entendimento da jornada técnica percorrida, oferecendo evidências práticas das interações do sistema em tempo de execução. Os \textit{logs} apresentados a seguir foram selecionados para exemplificar diversos aspectos vitais do desenvolvimento da aplicação:
+
+\begin{itemize}
+    \item \textbf{Mensagens de Depuração Customizadas:} Registros inseridos no código para mapear o fluxo de execução, atestando a passagem de parâmetros e o comportamento de algoritmos críticos (como a detecção automática do programa ativo).
+    \item \textbf{Comportamento do \textit{Backend} Django:} Mensagens de inicialização do servidor e saídas do console que auxiliam no rastreamento da integridade da aplicação e no tempo de resposta das requisições.
+    \item \textbf{Logs de Persistência e Consultas (ORM):} Trechos que mostram a interação direta com o banco de dados embarcado via ORM do Django, essenciais para validar o armazenamento consistente da grade horária e locutores.
+\end{itemize}
+
+\vspace{0.5cm}
+
+\textbf{Exemplo A: Inicialização do Servidor de Desenvolvimento Django}
+\begin{verbatim}
+System check identified no issues (0 silenced).
+June 21, 2026 - 10:41:25
+Django version 6.0.4, using settings 'setup.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+DEBUG [django.db.backends] (0.001) SELECT sqlite_version(); args=None
+DEBUG [django.db.backends] (0.002) SELECT "centralfm_programa"."id", 
+"centralfm_programa"."nome" FROM "centralfm_programa" LIMIT 21;
+\end{verbatim}
+
+Este \textit{log} do console de depuração ilustra a inicialização bem-sucedida do servidor de desenvolvimento Django. O sistema checa automaticamente a integridade lógica e sintática dos modelos da aplicação; ao não detectar anomalias, inicia o servidor local. A listagem de depuração do backend mostra a conexão direta de leitura com o banco SQLite.
+
+\vspace{0.5cm}
+
+\textbf{Exemplo B: Consulta e Detecção do Programa "No Ar"}
+\begin{verbatim}
+DEBUG [centralfm.utils] Chamando get_current_and_next_program()
+DEBUG [django.db.backends] (0.001) SELECT "centralfm_programa"."id", 
+"centralfm_programa"."nome", "centralfm_programa"."locutor_id" 
+FROM "centralfm_programa" WHERE ("centralfm_programa"."dia_semana" = 
+'domingo' AND "centralfm_programa"."horario_inicio" <= '08:15:30' AND 
+"centralfm_programa"."horario_fim" >= '08:15:30') LIMIT 1;
+DEBUG [centralfm.utils] Programa ativo: "Domingo Show" 
+(Locutor: Cairo Santos)
+DEBUG [django.db.backends] (0.002) SELECT "centralfm_programa"."id", 
+"centralfm_programa"."nome" FROM "centralfm_programa" 
+WHERE ("centralfm_programa"."dia_semana" = 'domingo' AND 
+"centralfm_programa"."horario_inicio" >= '09:00:00') 
+ORDER BY "centralfm_programa"."horario_inicio" ASC LIMIT 1;
+DEBUG [centralfm.utils] Próximo programa: "Santa Missa" 
+(Locutor: Igreja Católica)
+\end{verbatim}
+
+Estes registros em tempo de execução detalham a sequência exata de requisições desencadeadas pela função \texttt{get\_current\_and\_next\_program()} em \texttt{centralfm/utils.py}. O \textit{log} comprova a conversão automática das funções do ORM Django para sentenças SQL eficientes no SQLite. A função filtra os dados pelo dia da semana atual e faixa horária correspondente, retornando os objetos que alimentam dinamicamente a interface pública.
+
+\vspace{0.5cm}
+
+\textbf{Exemplo C: Depuração da Integração com a API Brasil Stream}
+\begin{verbatim}
+DEBUG [centralfm.views] Iniciando requisição para API Brasil Stream...
+DEBUG [urllib3.connectionpool] Starting new HTTPS connection (1): 
+api.brasilstream.com.br:443
+DEBUG [urllib3.connectionpool] https://api.brasilstream.com.br:443 
+"GET /musica_agora/id:1185863148; HTTP/1.1" 200 48
+DEBUG [centralfm.views] Resposta bruta da API: "´E O AMOR - ZEZ´E DI CAMARGO"
+DEBUG [centralfm.utils] Normalizando string de música: "´E O AMOR - ZEZ´E..."
+SUCCESS [centralfm.views] String tratada: "É O Amor - Zezé Di Camargo"
+\end{verbatim}
+
+Neste cenário de consumo de serviço externo, os \textit{logs} mapeiam a resposta HTTP da API de transmissão da emissora. O registro documenta o processo em que o \textit{backend} do Django obtém o metadado bruto e aciona a rotina \texttt{normalize\_radio\_text()} contida em \texttt{centralfm/utils.py} para sanar falhas de codificação (como acentos substituídos por caracteres de escape do transmissor legado), devolvendo o texto higienizado ao navegador do ouvinte.
+
+\end{apendicesenv}
+% Fim dos apêndices
+
+% ---
+% Início dos anexos
+% ---
+\begin{anexosenv}
+
+\partanexos
+
+\chapter[Considerações Futuras e Ideias Não Implementadas]{\textit{Considerações Futuras e Ideias Não Implementadas}}
+
+Este anexo destina-se à apresentação de propostas estruturais e funcionalidades avançadas que foram mapeadas durante o ciclo de engenharia de requisitos do portal digital da Rádio Central FM. No entanto, devido às delimitações de escopo e ao cronograma acadêmico de desenvolvimento, tais implementações não foram integradas à versão final da aplicação. Tais ideias são documentadas a seguir como um registro arquitetural para iterações futures, evidenciando a escalabilidade do \textit{software}.
+
+
+\section{Transmissão de Vídeo do Estúdio ao Vivo (Câmera no Estúdio)}
+Uma das tendências mais marcantes na radiodifusão contemporânea é a transformação da rádio tradicional em um veículo visual (modelo de Rádio Visual), transmitindo em tempo real o dia a dia do estúdio e entrevistas.
+
+\begin{itemize}
+    \item \textbf{Câmera no Estúdio e Integração WebRTC:} Habilitaria a transmissão de vídeo de baixa latência diretamente na página inicial do portal, permitindo aos ouvintes assistirem ao locutor e convidados em tempo real, paralelamente ao streaming de áudio.
+    \item \textbf{Monetização Visual:} Criaria novos espaços de publicidade e patrocínio visual durante as transmissões, atraindo anunciantes locais que demandam exposição em vídeo.
+\end{itemize}
+
+A não implementação do recurso nesta fase deve-se ao custo adicional de hardware (câmeras de alta definição, placas de captura de vídeo e iluminação profissional) e à necessidade de contratar maior largura de banda para suportar tráfego contínuo de vídeo em alta definição.
+
+\section{Autoatendimento e Triagem de Ouvintes via Chatbot}
+Visando otimizar a interação direta via WhatsApp, projetou-se a acoplagem de um módulo de autoatendimento inteligente integrado à API oficial do WhatsApp Business.
+
+\begin{itemize}
+    \item \textbf{Validação e Inscrição Automatizada:} O ouvinte que iniciasse contato para participar de uma promoção seria guiado por um assistente conversacional (\textit{chatbot}) para preenchimento de seus dados, que seriam injetados e validados no banco de dados sem intervenção humana.
+    \item \textbf{Fila de Pedidos para o Locutor:} Os pedidos de músicas e mensagens enviados pelos ouvintes passariam por uma triagem automatizada, sendo organizados por ordem de chegada e exibidos diretamente em um painel interno de monitoramento para o locutor de plantão no estúdio.
+\end{itemize}
+
+A não implementação do recurso nesta etapa justifica-se pelos custos operacionais associados ao licenciamento da API oficial de mensagens e pela complexidade adicional de engenharia de conversação necessária para mitigar respostas inconsistentes.
+
+\section{Painel Administrativo de Análise de Cliques e Campanhas}
+Complementarmente ao controle administrativo atual, considerou-se o desenvolvimento de um painel de análise estatística de acessos e interações.
+
+\begin{itemize}
+    \item \textbf{Monitoramento de Conversão de Promoções:} O sistema registraria a quantidade de cliques que cada \textit{banner} promocional rotativo recebeu e quais geraram maior redirecionamento para o canal do WhatsApp, fornecendo dados métricos concretos aos anunciantes regionais.
+    \item \textbf{Rastreamento de Downloads dos Aplicativos:} Habilitaria a contagem dinâmica de cliques nos atalhos direcionados às lojas de aplicativos móveis (Google Play e App Store), identificando o perfil de aparelho predominante na audiência regional.
+\end{itemize}
+
+Esta expansão foi postergada devido à necessidade de focar os esforços no núcleo do sistema — automação horária, integração com mensageiros instantâneos e responsividade — além de demandar estudos adicionais sobre privacidade de dados dos usuários (LGPD).
+
+\end{anexosenv}
+
 \end{document}
+
