@@ -77,17 +77,26 @@
     .winners-grid-wrapper {
         width: 100%;
         padding: 0 14px;
+        overflow: hidden;
     }
 
     .winners-grid {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        flex-wrap: nowrap;
         gap: 14px;
         width: 100%;
         max-width: 100%;
         margin: 0 auto;
         padding: 0;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        scroll-snap-type: x mandatory;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .winners-grid::-webkit-scrollbar {
+        display: none;
     }
 
     .winner-card {
@@ -207,27 +216,14 @@
 
         .winners-grid-wrapper {
             padding: 0 14px;
-            overflow: hidden;
         }
 
         .winners-grid {
-            flex-wrap: nowrap;
             gap: 10px;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            scroll-snap-type: x mandatory;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-            justify-content: flex-start;
-        }
-
-        .winners-grid::-webkit-scrollbar {
-            display: none;
         }
 
         .winner-card {
             width: calc((100% - 10px) / 2);
-            scroll-snap-align: start;
         }
 
         .winner-card:hover {
@@ -293,10 +289,11 @@
 
 <script>
     const winnersGrid = document.getElementById('winnersGrid');
-    if (winnersGrid && window.innerWidth <= 960) {
+    if (winnersGrid) {
         const originalCards = Array.from(winnersGrid.querySelectorAll('.winner-card'));
         
         if (originalCards.length > 0) {
+            // Clone cards to create seamless infinite loop
             originalCards.forEach(card => {
                 const clone = card.cloneNode(true);
                 clone.setAttribute('data-clone', 'true');
@@ -307,7 +304,7 @@
             const cardStep = () => {
                 const first = winnersGrid.querySelector('.winner-card:not([data-clone="true"])');
                 if (!first) return 0;
-                const gap = parseInt(window.getComputedStyle(winnersGrid).gap) || 10;
+                const gap = parseInt(window.getComputedStyle(winnersGrid).gap) || 14;
                 return first.offsetWidth + gap;
             };
 
